@@ -8,7 +8,7 @@ import com.alfred.parkingalfred.utils.EncodingUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Optional;
-import org.junit.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,7 +49,7 @@ public class EmployeeServiceImplTest {
       Long employeeId = 1L;
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(new Employee()));
       when(parkingLotRepository.findALLNotFullParkingLotRowsByEmployeeId(employeeId)).thenReturn(1);
-      boolean result = employeeService.doesEmplyeeHasNotFullParkingLots(employeeId);
+      boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
         assertEquals(true,result);
     }
     @Test
@@ -57,7 +57,7 @@ public class EmployeeServiceImplTest {
         Long employeeId = 1L;
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(new Employee()));
         when(parkingLotRepository.findALLNotFullParkingLotRowsByEmployeeId(employeeId)).thenReturn(0);
-        boolean result = employeeService.doesEmplyeeHasNotFullParkingLots(employeeId);
+        boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
         assertEquals(false,result);
     }
 }

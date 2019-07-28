@@ -101,7 +101,7 @@ public class EmployeeControllerTest {
         Employee employee = new Employee();
         employee.setId(employeeId);
         String token = JwtUtil.generateToken(employee);
-        when(employeeService.doesEmplyeeHasNotFullParkingLots(employeeId)).thenReturn(true);
+        when(employeeService.doesEmployeeHasNotFullParkingLots(employeeId)).thenReturn(true);
         mockMvc.perform(get("/employee/{employeeId}/parking-lots/",employeeId)
             .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());

@@ -7,7 +7,6 @@ import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.utils.EncodingUtil;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,10 +32,10 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public boolean doesEmplyeeHasNotFullParkingLots(Long employeeId) {
+  public boolean doesEmployeeHasNotFullParkingLots(Long employeeId) {
     employeeRepository.findById(employeeId).orElseThrow(() ->
         new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
     int result = parkingLotRepository.findALLNotFullParkingLotRowsByEmployeeId(employeeId);
-    return result > 0 ? true : false;
+    return result > 0;
   }
 }
