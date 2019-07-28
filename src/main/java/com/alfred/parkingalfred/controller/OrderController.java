@@ -35,9 +35,10 @@ public class OrderController {
         return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.getOrderById(id));
     }
     @GetMapping(value = "/orders",params = {"status"})
-    public ResultVO getParcelsByStatus(@RequestParam int[] status){
-        return new ResultVO<List>(200,"Return filteredOrders", orderService.getOrdersByStatus(status));
+    public ResultVO getParcelsByStatus(@RequestParam String status){
+        return new ResultVO<List>(200,"Return filteredOrders", orderService.getOrdersByStatus(Integer.valueOf(status)));
     }
+
 
 
     @PutMapping(value="/orders/{id}")
