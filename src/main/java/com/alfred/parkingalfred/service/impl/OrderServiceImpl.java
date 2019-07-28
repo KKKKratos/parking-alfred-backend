@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     }
     
     @Override
-    public List<Order> getOrdersByTypeAndStatus(Integer type,Integer status){
-        return orderRepository.findOrdersByTypeAndStatus(type,status);
+    public List<Order> getOrdersByStatus(Integer status){
+        return orderRepository.findOrdersByStatus(status);
     }
 }
