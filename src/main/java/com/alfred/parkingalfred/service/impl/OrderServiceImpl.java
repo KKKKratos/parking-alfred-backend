@@ -1,3 +1,4 @@
+
 package com.alfred.parkingalfred.service.impl;
 
 import com.alfred.parkingalfred.dto.CreateOrderDto;
@@ -54,5 +55,10 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
         order.setOrderId(UUIDUtil.generateUUID());
         return order;
+    }
+    
+    @Override
+    public List<Order> getOrdersByTypeAndStatus(Integer type,Integer status){
+        return orderRepository.findOrdersByTypeAndStatus(type,status);
     }
 }

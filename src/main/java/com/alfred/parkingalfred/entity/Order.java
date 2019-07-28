@@ -48,4 +48,25 @@ public class Order {
   @OneToOne
   @JoinColumn(name = "parkingLotId",referencedColumnName="id")
   private ParkingLot parkingLot;
+
+  public Order(String orderId, Integer type,  String customerAddress, Integer status) {
+    this.orderId = orderId;
+    this.type = type;
+    this.customerAddress = customerAddress;
+    this.status = status;
+  }
+
+  public Order(String orderId, Integer type, Long reservationTime, String customerAddress, Integer status, Employee employee,String carNumber , ParkingLot parkingLot) {
+    this.orderId = orderId;
+    this.type = type;
+    this.reservationTime = reservationTime;
+    this.customerAddress = customerAddress;
+    this.status = status;
+    this.employee = employee;
+    this.parkingLot = parkingLot;
+    this.carNumber=carNumber;
+  }
+
+    public void setCar(Car car) {
+    }
 }

@@ -14,7 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -83,6 +85,23 @@ public class OrderServiceImplTest {
         when(orderRepository.findById(anyLong())).thenThrow(new OrderNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
 
         assertThrows(OrderNotExistedException.class, () -> orderService.getOrderById(id));
+    }
+    @Test
+    public void should_return_order_List_when_get_orders_by_status_and_type() throws JsonProcessingException {
+
+
+        Order order = new Order();
+        order.setCarNumber("xiangAAA");
+        order.setCustomerAddress("address");
+        order.setReservationTime(new Date().getTime());
+        order.setType(OrderTypeEnum.PARK_CAR.getCode());
+        order.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
+        List<Order> orderList=new ArrayList<>();
+        orderList.add(order);
+        Mockito.when(orderRepository.findOrdersByTypeAndStatus(OrderTypeEnum.PARK_CAR.getCode(),OrderStatusEnum.WAIT_FOR_RECEIVE.getCode())).thenReturn(orderList);
+        List<Order> actualOrderList = orderService.getOrdersByTypeAndStatus(OrderTypeEnum.PARK_CAR.getCode(),OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
+
+        assertEquals(orderList.size(), actualOrderList.size());
     }
 
     @Test
