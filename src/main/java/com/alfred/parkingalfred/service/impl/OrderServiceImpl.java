@@ -14,7 +14,8 @@ import com.alfred.parkingalfred.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Listconcurrence;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -81,7 +82,11 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public List<Order> getOrdersByTypeAndStatus(Integer type, Integer status) {
-    return orderRepository.findOrdersByTypeAndStatus(type, status);
+    public List<Order> getOrdersByStatus(int[] status){
+        List<Order>result=new ArrayList<>();
+        for (int i=0;i<status.length;i++){
+            result.addAll( orderRepository.findOrdersByStatus(Integer.valueOf(status[i])));
+        };
+        return result;
   }
 }

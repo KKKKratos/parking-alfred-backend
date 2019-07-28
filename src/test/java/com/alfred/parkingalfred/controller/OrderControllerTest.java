@@ -63,7 +63,8 @@ public class OrderControllerTest {
     public void should_return_orders_when_get_it_by_type_and_status() throws Exception {
         List<Order>newOrders = new ArrayList<>();
         newOrders.add(new Order("1", 1,"南方软件园", 1));
-        when(orderService.getOrdersByTypeAndStatus(any(Integer.class),any(Integer.class))).thenReturn(newOrders);
+        int []status={1};
+        when(orderService.getOrdersByStatus(status)).thenReturn(newOrders);
         mockMvc.perform(get("/orders").param("type","1").param("status","1"))
                 .andExpect(jsonPath("$.data.length()")
                         .value(1));
