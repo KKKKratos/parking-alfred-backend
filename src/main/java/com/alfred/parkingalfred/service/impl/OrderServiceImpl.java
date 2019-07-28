@@ -11,11 +11,10 @@ import com.alfred.parkingalfred.repository.OrderRepository;
 import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.utils.RedisLock;
 import com.alfred.parkingalfred.utils.UUIDUtil;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Listconcurrence;
 
 @Service
 public class OrderServiceImpl implements OrderService {
