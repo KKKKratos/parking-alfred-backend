@@ -38,8 +38,8 @@ public class OrderServiceImpl implements OrderService {
     public Order updateOrderStatusById(Long id, Order order) {
         Order orderFinded = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
-        orderFinded.setStatus(order.getStatus());
-        return orderRepository.save(orderFinded);
+        // orderFinded.setStatus(order.getStatus());
+        return orderRepository.save(order);
     }
 
     @Override
@@ -57,13 +57,9 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderId(UUIDUtil.generateUUID());
         return order;
     }
-    
+
     @Override
-    public List<Order> getOrdersByStatus(int[] status){
-        List<Order>result=new ArrayList<>();
-        for (int i=0;i<status.length;i++){
-            result.addAll( orderRepository.findOrdersByStatus(Integer.valueOf(status[i])));
-        };
-        return result;
+    public List<Order> getOrdersByStatus(Integer status){
+        return orderRepository.findOrdersByStatus(status);
     }
 }
