@@ -11,6 +11,7 @@ import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.utils.UUIDUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -58,7 +59,11 @@ public class OrderServiceImpl implements OrderService {
     }
     
     @Override
-    public List<Order> getOrdersByStatus(Integer status){
-        return orderRepository.findOrdersByStatus(status);
+    public List<Order> getOrdersByStatus(int[] status){
+        List<Order>result=new ArrayList<>();
+        for (int i=0;i<status.length;i++){
+            result.addAll( orderRepository.findOrdersByStatus(Integer.valueOf(status[i])));
+        };
+        return result;
     }
 }

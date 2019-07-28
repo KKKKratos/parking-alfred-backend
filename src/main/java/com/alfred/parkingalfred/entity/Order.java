@@ -11,11 +11,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "orders")
 @Entity
@@ -30,12 +30,17 @@ public class Order {
   @Column(unique = true)
   private String orderId;
 
+  @Column(nullable = false)
   private Integer type;
 
+  @Column(nullable = false)
   private Long reservationTime;
 
+  @Column(nullable = false)
+  @Size(min = 1)
   private String customerAddress;
 
+  @Column(nullable = false)
   private Integer status;
 
   @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
@@ -43,6 +48,7 @@ public class Order {
   @JsonIgnore
   private Employee employee;
 
+  @Column(nullable = false)
   private String carNumber;
 
   @OneToOne
@@ -55,18 +61,4 @@ public class Order {
     this.customerAddress = customerAddress;
     this.status = status;
   }
-
-  public Order(String orderId, Integer type, Long reservationTime, String customerAddress, Integer status, Employee employee,String carNumber , ParkingLot parkingLot) {
-    this.orderId = orderId;
-    this.type = type;
-    this.reservationTime = reservationTime;
-    this.customerAddress = customerAddress;
-    this.status = status;
-    this.employee = employee;
-    this.parkingLot = parkingLot;
-    this.carNumber=carNumber;
-  }
-
-    public void setCar(Car car) {
-    }
 }

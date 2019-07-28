@@ -6,5 +6,5 @@ public interface EmployeeService {
 
   Employee getEmployeeByNameAndPassword(String name, String password);
 
-  boolean doesEmplyeeHasNotFullParkingLots(Long employeeId);
+  boolean doesEmployeeHasNotFullParkingLots(Long employeeId);
 }
