@@ -81,11 +81,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-    public List<Order> getOrdersByStatus(int[] status){
-        List<Order>result=new ArrayList<>();
-        for (int i=0;i<status.length;i++){
-            result.addAll( orderRepository.findOrdersByStatus(Integer.valueOf(status[i])));
-        };
-        return result;
+    public List<Order> getOrdersByStatus(Integer status){
+        return orderRepository.findOrdersByStatus(status);
   }
 }

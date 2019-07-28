@@ -104,9 +104,8 @@ public class OrderServiceImplTest {
         order.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
         List<Order> orderList=new ArrayList<>();
         orderList.add(order);
-        int []status={OrderStatusEnum.WAIT_FOR_RECEIVE.getCode()};
         Mockito.when(orderRepository.findOrdersByStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode())).thenReturn(orderList);
-        List<Order> actualOrderList = orderService.getOrdersByStatus(status);
+        List<Order> actualOrderList = orderService.getOrdersByStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
 
         assertEquals(orderList.size(), actualOrderList.size());
     }
