@@ -8,7 +8,6 @@ import com.alfred.parkingalfred.utils.JwtUtil;
 import com.alfred.parkingalfred.vo.ResultVO;
 import com.alfred.parkingalfred.utils.ResultVOUtil;
 import java.util.List;
-import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
