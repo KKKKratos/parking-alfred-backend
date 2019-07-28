@@ -33,4 +33,9 @@ public class OrderController {
     public ResultVO getOrderById(@PathVariable Long id) {
         return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.getOrderById(id));
     }
+
+    @PutMapping(value="/orders/{id}")
+    public ResultVO updateOrderStatusById(@PathVariable Long id,@RequestBody Order order){
+        return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.updateOrderStatusById(id,order));
+    }
 }

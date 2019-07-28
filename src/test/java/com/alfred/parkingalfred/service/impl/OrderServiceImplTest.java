@@ -84,4 +84,23 @@ public class OrderServiceImplTest {
 
         assertThrows(OrderNotExistedException.class, () -> orderService.getOrderById(id));
     }
+
+    @Test
+    public void should_throw_exception_when_get_order_by_invalid_id1() throws JsonProcessingException {
+        Long id = 1L;
+
+        Order order = new Order();
+        order.setId(id);
+        order.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
+
+        Order orderExpected = new Order();
+        orderExpected.setId(id);
+        orderExpected.setStatus(OrderStatusEnum.WAIT_FOR_CONFIRM.getCode());
+
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
+        when(orderRepository.save(any())).thenReturn(orderExpected);
+        Order actualOrder = orderService.updateOrderStatusById(id, orderExpected);
+
+        assertEquals(objectMapper.writeValueAsString(orderExpected), objectMapper.writeValueAsString(actualOrder));
+    }
 }

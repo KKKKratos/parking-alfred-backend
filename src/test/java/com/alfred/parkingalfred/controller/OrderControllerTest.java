@@ -89,4 +89,30 @@ public class OrderControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void should_return_updated_order_when_update_by_id() throws Exception {
+        Long id = 1L;
+        Order order = new Order();
+        order.setId(id);
+
+        Order orderExpected = new Order();
+        orderExpected.setId(id);
+        orderExpected.setStatus(2);
+
+        when(orderService.updateOrderStatusById((long) 1,order))
+                .thenReturn(orderExpected);
+
+        Employee employee = new Employee();
+        employee.setId(id);
+        String token = JwtUtil.generateToken(employee);
+
+        mockMvc.perform(get("/orders/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(order))
+                .header("Authorization", "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
 }

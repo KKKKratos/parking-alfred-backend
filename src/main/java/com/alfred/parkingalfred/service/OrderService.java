@@ -12,4 +12,6 @@ public interface OrderService {
     Order addOrder(CreateOrderDto createOrderDto);
 
     Order getOrderById(Long id);
+
+    Order updateOrderStatusById(Long id, Order order);
 }

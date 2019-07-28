@@ -33,6 +33,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order updateOrderStatusById(Long id, Order order) {
+        Order orderFinded = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
+        orderFinded.setStatus(order.getStatus());
+        return orderRepository.save(orderFinded);
+    }
+
+    @Override
     public List<Order> getOrders() {
         return orderRepository.findAll();
     }

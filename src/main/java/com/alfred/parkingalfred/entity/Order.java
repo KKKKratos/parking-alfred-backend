@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -38,6 +40,7 @@ public class Order {
 
   @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
   @JoinColumn(name = "employeeId",referencedColumnName="id")
+  @JsonIgnore
   private Employee employee;
 
   private String carNumber;
