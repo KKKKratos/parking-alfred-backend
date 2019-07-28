@@ -5,6 +5,7 @@ import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.utils.EnumUtil;
 import com.alfred.parkingalfred.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -15,7 +16,9 @@ import java.util.stream.Stream;
 
 public class JwtAuthInterceptor implements HandlerInterceptor {
 
-    private String[] permits = {"/login","/orders"};
+    private String[] permits = {"/**"};
+
+    private static final AntPathMatcher matcher = new AntPathMatcher();
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
@@ -77,6 +80,6 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
     }
 
     private boolean isExcludePath(String uri) {
-        return Stream.of(permits).anyMatch(uri::matches);
+        return Stream.of(permits).anyMatch(x -> matcher.match(x, uri));
     }
 }

@@ -1,5 +1,6 @@
 package com.alfred.parkingalfred.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -51,5 +52,6 @@ public class Employee {
       inverseJoinColumns = {
           @JoinColumn(name = "pid")
       })
+  @JsonIgnore
   private List<ParkingLot> parkingLots;
 }

@@ -13,6 +13,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "orders")
 @Entity
@@ -25,7 +26,7 @@ public class Order {
   private Long id;
 
   @Column(unique = true)
-  private Long orderId;
+  private String orderId;
 
   private Integer type;
 
@@ -39,9 +40,7 @@ public class Order {
   @JoinColumn(name = "employeeId",referencedColumnName="id")
   private Employee employee;
 
-  @OneToOne
-  @JoinColumn(name = "carId",referencedColumnName="id")
-  private Car car;
+  private String carNumber;
 
   @OneToOne
   @JoinColumn(name = "parkingLotId",referencedColumnName="id")

@@ -1,6 +1,6 @@
 package com.alfred.parkingalfred.controller;
 
-import com.alfred.parkingalfred.entity.Order;
+import com.alfred.parkingalfred.dto.CreateOrderDto;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.vo.ResultVO;
@@ -25,8 +25,8 @@ public class OrderController {
     }
 
     @PostMapping("/orders")
-    public ResultVO createOrder(@RequestBody Order order) {
-        return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.addOrder(order));
+    public ResultVO createOrder(@RequestBody CreateOrderDto createOrderDto) {
+        return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.addOrder(createOrderDto));
     }
 
     @GetMapping("/orders/{id}")

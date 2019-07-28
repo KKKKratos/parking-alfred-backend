@@ -1,7 +1,9 @@
 package com.alfred.parkingalfred.controller;
 
+import com.alfred.parkingalfred.dto.CreateOrderDto;
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.Order;
+import com.alfred.parkingalfred.enums.OrderStatusEnum;
 import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,12 +59,16 @@ public class OrderControllerTest {
 
     @Test
     public void should_return_order_when_add_new_order() throws Exception {
+        CreateOrderDto createOrderDto = new CreateOrderDto();
+
         Order order = new Order();
-        when(orderService.addOrder(order)).thenReturn(order);
+        order.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
+
+        when(orderService.addOrder(createOrderDto)).thenReturn(order);
 
         mockMvc.perform(post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(order))
+                .content(objectMapper.writeValueAsString(createOrderDto))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

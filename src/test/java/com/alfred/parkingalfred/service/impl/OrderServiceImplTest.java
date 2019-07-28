@@ -1,7 +1,8 @@
 package com.alfred.parkingalfred.service.impl;
 
-import com.alfred.parkingalfred.entity.Car;
+import com.alfred.parkingalfred.dto.CreateOrderDto;
 import com.alfred.parkingalfred.entity.Order;
+import com.alfred.parkingalfred.enums.OrderStatusEnum;
 import com.alfred.parkingalfred.enums.OrderTypeEnum;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.exception.OrderNotExistedException;
@@ -39,18 +40,26 @@ public class OrderServiceImplTest {
 
     @Test
     public void should_add_new_order_when_create_new_order() throws JsonProcessingException {
-        Car car = new Car();
-        car.setCarNumber("123456");
-        Order order = new Order();
-        order.setCar(car);
-        order.setCustomerAddress("address");
-        order.setReservationTime(new Date().getTime());
-        order.setType(OrderTypeEnum.PARK_CAR.getCode());
+        String carNumber = "123456";
+        String address = "address";
+        Long reservationTime = new Date().getTime();
+        CreateOrderDto createOrderDto = new CreateOrderDto();
+        createOrderDto.setCarNumber(carNumber);
+        createOrderDto.setCustomerAddress(address);
+        createOrderDto.setReservationTime(reservationTime);
+        createOrderDto.setType(OrderTypeEnum.PARK_CAR.getCode());
 
-        Mockito.when(orderRepository.save(any())).thenReturn(order);
-        Order actualOrder = orderService.addOrder(order);
+        Order expectOrder = new Order();
+        expectOrder.setCarNumber(carNumber);
+        expectOrder.setCustomerAddress(address);
+        expectOrder.setReservationTime(reservationTime);
+        expectOrder.setType(OrderTypeEnum.PARK_CAR.getCode());
+        expectOrder.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
+        Mockito.when(orderRepository.save(any())).thenReturn(expectOrder);
+        Order actualOrder = orderService.addOrder(createOrderDto);
+        expectOrder.setOrderId(actualOrder.getOrderId());
 
-        assertEquals(objectMapper.writeValueAsString(order), objectMapper.writeValueAsString(actualOrder));
+        assertEquals(objectMapper.writeValueAsString(expectOrder), objectMapper.writeValueAsString(actualOrder));
     }
 
     @Test
