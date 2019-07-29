@@ -19,12 +19,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -92,28 +91,30 @@ public class OrderServiceImplTest {
 
         assertThrows(OrderNotExistedException.class, () -> orderService.getOrderById(id));
     }
+
     @Test
-    public void should_return_order_List_when_get_orders_by_status_and_type() throws JsonProcessingException {
+    public void should_return_order_List_when_get_orders_by_status() {
+        Order order_1 = new Order();
+        order_1.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
+        Order order_2 = new Order();
+        order_2.setStatus(OrderStatusEnum.CONFIRM.getCode());
+        List<Order> allOrders = new ArrayList<Order>() {{
+            add(order_1);
+            add(order_2);
+        }};
+        List<Order> expectOrders = new ArrayList<Order>() {{
+            add(order_1);
+        }};
 
+        Mockito.when(orderRepository.findAll()).thenReturn(allOrders);
+        List<Order> actualOrderList = orderService.getOrders(null, null, OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
 
-        Order order = new Order();
-        order.setCarNumber("xiangAAA");
-        order.setCustomerAddress("address");
-        order.setReservationTime(new Date().getTime());
-        order.setType(OrderTypeEnum.PARK_CAR.getCode());
-        order.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
-        List<Order> orderList=new ArrayList<>();
-        orderList.add(order);
-        Mockito.when(orderRepository.findOrdersByStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode())).thenReturn(orderList);
-        List<Order> actualOrderList = orderService.getOrdersByStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
-
-        assertEquals(orderList.size(), actualOrderList.size());
+        assertEquals(expectOrders.size(), actualOrderList.size());
     }
 
     @Test
-    public void should_throw_exception_when_get_order_by_invalid_id1() throws JsonProcessingException {
+    public void should_return_Order_when_call_updateOrderStatusById_with_true_param() throws JsonProcessingException {
         Long id = 1L;
-
         Order order = new Order();
         order.setId(id);
         order.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
@@ -122,12 +123,33 @@ public class OrderServiceImplTest {
         orderExpected.setId(id);
         orderExpected.setStatus(OrderStatusEnum.WAIT_FOR_CONFIRM.getCode());
 
-        ReflectionTestUtils.setField(orderService,OrderServiceImpl.class,"redisLock",redisLock
-            ,RedisLock.class);
+        ReflectionTestUtils.setField(orderService, OrderServiceImpl.class, "redisLock", redisLock
+                , RedisLock.class);
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
         when(orderRepository.save(any())).thenReturn(orderExpected);
-        when(redisLock.lock(any(String.class),any(String.class))).thenReturn(true);
+        when(redisLock.lock(any(String.class), any(String.class))).thenReturn(true);
         Order actualOrder = orderService.updateOrderStatusById(id, orderExpected);
         assertEquals(objectMapper.writeValueAsString(orderExpected), objectMapper.writeValueAsString(actualOrder));
+    }
+
+    @Test
+    public void should_return_order_List_when_get_orders_order_by_reservation_time() {
+        Order order_1 = new Order();
+        order_1.setReservationTime(1L);
+        Order order_2 = new Order();
+        order_2.setReservationTime(2L);
+        List<Order> allOrders = new ArrayList<Order>() {{
+            add(order_1);
+            add(order_2);
+        }};
+        List<Order> expectOrders = new ArrayList<Order>() {{
+            add(order_2);
+            add(order_1);
+        }};
+
+        Mockito.when(orderRepository.findAll()).thenReturn(allOrders);
+        List<Order> actualOrderList = orderService.getOrders("reservationTime", "desc", null);
+
+        assertEquals(expectOrders.size(), actualOrderList.size());
     }
 }

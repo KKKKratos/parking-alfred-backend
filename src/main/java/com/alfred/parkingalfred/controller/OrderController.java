@@ -21,8 +21,10 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public ResultVO getOrders() {
-        return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.getOrders());
+    public ResultVO getOrders(@RequestParam(name = "sortProperty", required = false) String sortProperty,
+                              @RequestParam(name = "sortOrder", required = false) String sortOrder,
+                              @RequestParam(name = "status", required = false) Integer filterStatus) {
+        return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.getOrders(sortProperty, sortOrder, filterStatus));
     }
 
     @PostMapping("/orders")
@@ -34,15 +36,10 @@ public class OrderController {
     public ResultVO getOrderById(@PathVariable Long id) {
         return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.getOrderById(id));
     }
-    @GetMapping(value = "/orders",params = {"status"})
-    public ResultVO getParcelsByStatus(@RequestParam String status){
-        return new ResultVO<List>(200,"Return filteredOrders", orderService.getOrdersByStatus(Integer.valueOf(status)));
-    }
 
 
-
-    @PutMapping(value="/orders/{id}")
-    public ResultVO updateOrderStatusById(@PathVariable Long id,@RequestBody Order order){
-        return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.updateOrderStatusById(id,order));
+    @PutMapping(value = "/orders/{id}")
+    public ResultVO updateOrderStatusById(@PathVariable Long id, @RequestBody Order order) {
+        return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.updateOrderStatusById(id, order));
     }
 }

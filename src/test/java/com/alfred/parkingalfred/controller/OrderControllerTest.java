@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -46,28 +47,49 @@ public class OrderControllerTest {
     @Before
     public void setUp() {
         orders = new ArrayList<>();
-        orders.add(new Order( "1", 1,"南方软件园", 1));
-        orders.add(new Order("2", 1,"凤凰兰亭", 2));
-        orders.add(new Order("3", 1,"红树东岸", 3));
+        orders.add(new Order("1", 1, "南方软件园", 1));
+        orders.add(new Order("2", 1, "凤凰兰亭", 2));
+        orders.add(new Order("3", 1, "红树东岸", 3));
     }
 
     @Test
     public void should_return_orders_when_get_it() throws Exception {
-        when(orderService.getOrders()).thenReturn(orders);
+        when(orderService.getOrders(null, null, null)).thenReturn(orders);
 
         mockMvc.perform(get("/orders"))
                 .andExpect(jsonPath("$.data.length()")
                         .value(3));
     }
+
     @Test
     public void should_return_orders_when_get_it_by_status() throws Exception {
-        List<Order>newOrders = new ArrayList<>();
-        newOrders.add(new Order("1", 1,"南方软件园", 1));
+        List<Order> newOrders = new ArrayList<>();
+        newOrders.add(new Order("1", 1, "南方软件园", 1));
 
-        when(orderService.getOrdersByStatus(1)).thenReturn(newOrders);
-        mockMvc.perform(get("/orders").param("status","1"))
+        when(orderService.getOrders(null, null, 1)).thenReturn(newOrders);
+        mockMvc.perform(get("/orders").param("status", "1"))
                 .andExpect(jsonPath("$.data.length()")
                         .value(1));
+    }
+
+    @Test
+    public void should_return_orders_when_get_it_order_by_reservation_time() throws Exception {
+        Order order_1 = new Order();
+        order_1.setReservationTime(1L);
+        Order order_2 = new Order();
+        order_2.setReservationTime(2L);
+        List<Order> expectOrders = new ArrayList<Order>() {{
+            add(order_2);
+            add(order_1);
+        }};
+
+        when(orderService.getOrders("reservationTime", "desc", null)).thenReturn(expectOrders);
+        mockMvc.perform(get("/orders")
+                .param("sortProperty", "reservationTime")
+                .param("sortOrder", "desc"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].reservationTime")
+                        .value(2));
     }
 
     @Test
@@ -113,7 +135,7 @@ public class OrderControllerTest {
         orderExpected.setId(id);
         orderExpected.setStatus(2);
 
-        when(orderService.updateOrderStatusById((long) 1,order))
+        when(orderService.updateOrderStatusById((long) 1, order))
                 .thenReturn(orderExpected);
 
         Employee employee = new Employee();
