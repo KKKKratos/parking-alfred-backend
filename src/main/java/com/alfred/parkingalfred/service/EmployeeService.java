@@ -7,9 +7,11 @@ import org.springframework.data.domain.Page;
 
 public interface EmployeeService {
 
-  Employee getEmployeeByNameAndPassword(String name, String password);
+  Employee getEmployeeByMailAndPassword(String mail, String password);
 
   boolean doesEmployeeHasNotFullParkingLots(Long employeeId);
 
+
   List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page,Integer size);
+  Employee getEmployeeById(Long id);
 }

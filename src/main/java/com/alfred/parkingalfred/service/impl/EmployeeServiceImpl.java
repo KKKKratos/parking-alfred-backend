@@ -3,6 +3,7 @@ package com.alfred.parkingalfred.service.impl;
 import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.enums.ResultEnum;
+import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
@@ -13,6 +14,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.function.Supplier;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -27,9 +30,9 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public Employee getEmployeeByNameAndPassword(String name, String password) {
+  public Employee getEmployeeByMailAndPassword(String mail, String password) {
     String encodedPassword = EncodingUtil.encodingByMd5(password);
-    Employee employee = employeeRepository.findByNameAndPassword(name, encodedPassword);
+    Employee employee = employeeRepository.findByMailAndPassword(mail, encodedPassword);
     if (employee == null) {
       throw new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED);
     }
@@ -45,9 +48,9 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page, Integer size) {
-    PageRequest pageRequest = PageRequest.of(page-1, size);
-    Page<Employee> employeePage = employeeRepository.findAll(pageRequest);
+  public Employee getEmployeeById(Long id) {
+    return employeeRepository.findById(id)
+            .orElseThrow(() -> new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
     List<EmployeeVO> employeeVOList = EmployeeToEmployeeVOConverter
         .convert(employeePage.getContent());
     return employeeVOList;

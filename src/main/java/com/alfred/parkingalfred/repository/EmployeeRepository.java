@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-    Employee findByNameAndPassword(String name, String password);
+    Employee findByMailAndPassword(String name, String password);
 
     Page<Employee> findAll(Pageable pageable);
 }

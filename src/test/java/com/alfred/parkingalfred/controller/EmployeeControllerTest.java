@@ -52,16 +52,16 @@ public class EmployeeControllerTest {
 
     @Test
     public void should_return_ok_when_login_with_correct_account() throws Exception {
-        String name = "name";
+        String mail = "mail";
         String password = "password";
         Employee loginEmployee = new Employee();
-        loginEmployee.setName(name);
+        loginEmployee.setMail(mail);
         loginEmployee.setPassword(password);
 
         Employee employee = new Employee();
         employee.setId(1L);
         employee.setRole(RoleEnum.PARKING_BOY.getCode());
-        when(employeeService.getEmployeeByNameAndPassword(anyString(), anyString())).thenReturn(employee);
+        when(employeeService.getEmployeeByMailAndPassword(anyString(), anyString())).thenReturn(employee);
 
         mockMvc.perform(post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -71,13 +71,13 @@ public class EmployeeControllerTest {
 
     @Test
     public void should_return_404_when_login_with_invalid_account() throws Exception {
-        String name = "name";
+        String mail = "mail";
         String password = "password";
         Employee loginEmployee = new Employee();
-        loginEmployee.setName(name);
+        loginEmployee.setMail(mail);
         loginEmployee.setPassword(password);
 
-        when(employeeService.getEmployeeByNameAndPassword(anyString(), anyString())).thenThrow(
+        when(employeeService.getEmployeeByMailAndPassword(anyString(), anyString())).thenThrow(
                 new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
 
         mockMvc.perform(post("/login")
@@ -90,15 +90,16 @@ public class EmployeeControllerTest {
     public void should_return_parkingLots_when_call_getParkingLotsByEmployeeId_API_with_true_param()
             throws Exception {
         ParkingLot parkingLot = new ParkingLot((long) 1, "test lot", 100, 100);
-        Long employeeId= 1L;
+        Long employeeId = 1L;
         Employee employee = new Employee();
         employee.setId(employeeId);
         String token = JwtUtil.generateToken(employee);
-        when(parkingLotService.getParkingLotsByParkingBoyId(employeeId)).thenReturn(Arrays.asList(parkingLot));
+        when(parkingLotService.getParkingLotsByParkingBoyId(employeeId)).thenReturn(Collections.singletonList(parkingLot));
         mockMvc.perform(get("/employee/{employeeId}/parking-lots/", employeeId)
                 .header("Authorization", "Bearer " + token)
-               ).andExpect(status().isOk());
+        ).andExpect(status().isOk());
     }
+
     @Test
     public void should_return_true_when_call_getStatusOfEmployeeById_API_with_true_param()throws Exception {
         Long employeeId= 1L;
@@ -107,8 +108,25 @@ public class EmployeeControllerTest {
         employee.setId(employeeId);
         String token = JwtUtil.generateToken(employee);
         when(employeeService.doesEmployeeHasNotFullParkingLots(employeeId)).thenReturn(true);
-        mockMvc.perform(get("/employee/{employeeId}/parking-lots/",employeeId)
-            .header("Authorization", "Bearer " + token))
+        mockMvc.perform(get("/employee/{employeeId}/parking-lots/", employeeId)
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_return_employee_when_get_self_employee() throws Exception {
+        Long employeeId = 1L;
+        RoleEnum role = RoleEnum.PARKING_BOY;
+        Employee employee = new Employee();
+        employee.setId(employeeId);
+        employee.setRole(role.getCode());
+
+        when(employeeService.getEmployeeById(employeeId)).thenReturn(employee);
+        String token = JwtUtil.generateToken(employee);
+
+        mockMvc.perform(get("/employee", employeeId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }
     @Test
