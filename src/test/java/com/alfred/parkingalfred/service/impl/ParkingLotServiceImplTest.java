@@ -3,8 +3,10 @@ package com.alfred.parkingalfred.service.impl;
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
+import com.alfred.parkingalfred.form.ParkingLotForm;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +14,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public  class ParkingLotServiceImplTest {
@@ -52,5 +58,41 @@ public  class ParkingLotServiceImplTest {
         employeeRepository.findById(Mockito.anyLong()
     )).thenReturn(empty);
       List<ParkingLot>parkingLotsResult = parkingLotServiceImpl.getParkingLotsByParkingBoyId(1L);
+  }
+  @Test
+  public void should_return_parkingLot_when_call_createParkingLot_API_with_true_param(){
+    ParkingLotForm parkingLotForm = new ParkingLotForm();
+    parkingLotForm.setCapacity(100);
+    parkingLotForm.setName("test停车场");
+    parkingLotForm.setOccupied(99);
+
+    ParkingLot parkingLotExpected = new ParkingLot();
+    BeanUtils.copyProperties(parkingLotForm,parkingLotExpected);
+    parkingLotExpected.setId(1L);
+    Mockito.when(
+        parkingLotRepository.save(Mockito.any(ParkingLot.class))
+    ).thenReturn(parkingLotExpected);
+    ReflectionTestUtils.setField(parkingLotServiceImpl,ParkingLotServiceImpl.class
+        ,"parkingLotRepository",parkingLotRepository,ParkingLotRepository.class);
+    ParkingLot parkingLotResult = parkingLotServiceImpl.createParkingLot(parkingLotForm);
+    Assert.assertEquals(parkingLotExpected.getId(),parkingLotResult.getId());
+  }
+
+  @Test
+  public void should_return_parkingLots_when_call_getAllParkingLotByPageAndSize(){
+    PageRequest pageRequest = PageRequest.of(0,10);
+    List<ParkingLot> parkingLotList = new ArrayList<ParkingLot>(){
+      {
+        add(new ParkingLot());
+        add(new ParkingLot());
+        add(new ParkingLot());
+      }
+    };
+    PageImpl parkingLotPage = new PageImpl(parkingLotList);
+    Mockito.when(
+        parkingLotRepository.findAll(Mockito.any(PageRequest.class))
+    ).thenReturn(parkingLotPage);
+    Page<ParkingLot> parkingLotPageResult = parkingLotRepository.findAll(pageRequest);
+    Assert.assertEquals(3,parkingLotPageResult.getContent().size());
   }
 }

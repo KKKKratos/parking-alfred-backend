@@ -69,8 +69,9 @@ public class EmployeeServiceImpl implements EmployeeService {
   public EmployeeVO createEmployee(EmployeeForm employeeForm) {
     Employee employee = new Employee();
     BeanUtils.copyProperties(employeeForm, employee);
-    employee.setPassword(UUIDUtil.generateUUID()
-        .replace("-", "").substring(0, 8));
+    String password = UUIDUtil.generateUUID()
+        .replace("-", "").substring(0, 8);
+    employee.setPassword(EncodingUtil.encodingByMd5(password));
     Employee employeeResult = employeeRepository.save(employee);
     EmployeeVO employeeVOResult = new EmployeeVO();
     BeanUtils.copyProperties(employeeResult, employeeVOResult);
