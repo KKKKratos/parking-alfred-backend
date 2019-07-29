@@ -10,6 +10,8 @@ import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.ParkingLotService;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,5 +39,17 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     ParkingLot parkingLot = new ParkingLot();
     BeanUtils.copyProperties(parkingLotForm, parkingLot);
     return  parkingLotRepository.save(parkingLot);
+  }
+
+  @Override
+  public List<ParkingLot> getAllParkingLotsByPageAndSize(int page,int size) {
+    PageRequest pageRequest = PageRequest.of(page-1,size);
+    Page<ParkingLot> parkingLotPage = parkingLotRepository.findAll(pageRequest);
+    return parkingLotPage.getContent();
+  }
+
+  @Override
+  public int getParkingLotCount() {
+    return parkingLotRepository.getParkingLotCount();
   }
 }

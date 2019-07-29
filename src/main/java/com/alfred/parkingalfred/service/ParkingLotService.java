@@ -9,4 +9,8 @@ public interface ParkingLotService {
   public List<ParkingLot> getParkingLotsByParkingBoyId(Long parkingBoyId);
 
   public ParkingLot createParkingLot(ParkingLotForm parkingLotForm);
+
+  public List<ParkingLot> getAllParkingLotsByPageAndSize(int page,int size);
+
+  public int getParkingLotCount();
 }
