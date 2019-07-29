@@ -2,8 +2,8 @@ package com.alfred.parkingalfred.service.impl;
 
 import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
 import com.alfred.parkingalfred.entity.Employee;
+import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.ResultEnum;
-import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
 import com.alfred.parkingalfred.form.EmployeeForm;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
@@ -18,12 +18,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.function.Supplier;
-
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
   private final EmployeeRepository employeeRepository;
+
   private final ParkingLotRepository parkingLotRepository;
 
   public EmployeeServiceImpl(EmployeeRepository employeeRepository,
@@ -54,9 +53,8 @@ public class EmployeeServiceImpl implements EmployeeService {
   public List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page, Integer size) {
     PageRequest pageRequest = PageRequest.of(page - 1, size);
     Page<Employee> employeePage = employeeRepository.findAll(pageRequest);
-    List<EmployeeVO> employeeVOList = EmployeeToEmployeeVOConverter
+    return EmployeeToEmployeeVOConverter
         .convert(employeePage.getContent());
-    return employeeVOList;
   }
 
   @Override
@@ -78,8 +76,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     return employeeVOResult;
   }
 
-
   public int getEmployeeCount() {
     return employeeRepository.getEmployeeCount();
+  }
+
+  @Override
+  public Employee updateEmployeeParkingLots(Long employeeId, List<Long> parkingLotIdList) {
+    Employee employee = employeeRepository.findById(employeeId)
+            .orElseThrow(() -> new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
+    List<ParkingLot> parkingLots = parkingLotRepository.findAllByIdIn(parkingLotIdList);
+    List<ParkingLot> employeeParkingLots = employee.getParkingLots();
+    employeeParkingLots.addAll(parkingLots);
+    employeeRepository.save(employee);
+    return employee;
   }
 }
