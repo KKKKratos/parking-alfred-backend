@@ -1,8 +1,5 @@
 package com.alfred.parkingalfred.vo;
-
-
 import java.io.Serializable;
-import javax.persistence.Column;
 import lombok.Data;
 
 @Data
@@ -18,8 +15,6 @@ public class EmployeeVO implements Serializable {
   private Integer status;
 
   private String mail;
-
-  private String password;
 
   private Integer role;
 }
