@@ -22,9 +22,9 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public Employee getEmployeeByNameAndPassword(String name, String password) {
+  public Employee getEmployeeByMailAndPassword(String mail, String password) {
     String encodedPassword = EncodingUtil.encodingByMd5(password);
-    Employee employee = employeeRepository.findByNameAndPassword(name, encodedPassword);
+    Employee employee = employeeRepository.findByMailAndPassword(mail, encodedPassword);
     if (employee == null) {
       throw new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED);
     }

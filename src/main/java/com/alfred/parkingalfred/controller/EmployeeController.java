@@ -27,7 +27,7 @@ public class EmployeeController {
 
   @PostMapping(value = "/login")
   public ResultVO login(@RequestBody Employee loginEmployee) {
-    Employee employee = employeeService.getEmployeeByNameAndPassword(loginEmployee.getName(), loginEmployee.getPassword());
+    Employee employee = employeeService.getEmployeeByMailAndPassword(loginEmployee.getMail(), loginEmployee.getPassword());
     String token = JwtUtil.generateToken(employee);
     return ResultVOUtil.success(token);
   }
@@ -37,6 +37,7 @@ public class EmployeeController {
     List<ParkingLot> parkingLots = parkingLotService.getParkingLotsByParkingBoyId(employeeId);
     return  ResultVOUtil.success(parkingLots);
   }
+
   @GetMapping(value = "/employee/{employeeId}/status")
   public ResultVO getEmployeeParkingLotStatus(@PathVariable Long employeeId){
     boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);

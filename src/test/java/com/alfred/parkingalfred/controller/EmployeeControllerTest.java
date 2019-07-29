@@ -10,6 +10,7 @@ import com.alfred.parkingalfred.service.ParkingLotService;
 import com.alfred.parkingalfred.utils.JwtUtil;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -47,16 +48,16 @@ public class EmployeeControllerTest {
 
     @Test
     public void should_return_ok_when_login_with_correct_account() throws Exception {
-        String name = "name";
+        String mail = "mail";
         String password = "password";
         Employee loginEmployee = new Employee();
-        loginEmployee.setName(name);
+        loginEmployee.setMail(mail);
         loginEmployee.setPassword(password);
 
         Employee employee = new Employee();
         employee.setId(1L);
         employee.setRole(RoleEnum.PARKING_BOY.getCode());
-        when(employeeService.getEmployeeByNameAndPassword(anyString(), anyString())).thenReturn(employee);
+        when(employeeService.getEmployeeByMailAndPassword(anyString(), anyString())).thenReturn(employee);
 
         mockMvc.perform(post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -66,13 +67,13 @@ public class EmployeeControllerTest {
 
     @Test
     public void should_return_404_when_login_with_invalid_account() throws Exception {
-        String name = "name";
+        String mail = "mail";
         String password = "password";
         Employee loginEmployee = new Employee();
-        loginEmployee.setName(name);
+        loginEmployee.setMail(mail);
         loginEmployee.setPassword(password);
 
-        when(employeeService.getEmployeeByNameAndPassword(anyString(), anyString())).thenThrow(
+        when(employeeService.getEmployeeByMailAndPassword(anyString(), anyString())).thenThrow(
                 new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
 
         mockMvc.perform(post("/login")
@@ -89,7 +90,7 @@ public class EmployeeControllerTest {
         Employee employee = new Employee();
         employee.setId(employeeId);
         String token = JwtUtil.generateToken(employee);
-        when(parkingLotService.getParkingLotsByParkingBoyId(employeeId)).thenReturn(Arrays.asList(parkingLot));
+        when(parkingLotService.getParkingLotsByParkingBoyId(employeeId)).thenReturn(Collections.singletonList(parkingLot));
         mockMvc.perform(get("/employee/{employeeId}/parking-lots/", employeeId)
                 .header("Authorization", "Bearer " + token)
                ).andExpect(status().isOk());
@@ -97,7 +98,6 @@ public class EmployeeControllerTest {
     @Test
     public void should_return_true_when_call_getStatusOfEmployeeById_API_with_true_param()throws Exception {
         Long employeeId= 1L;
-        ParkingLot parkingLot = new ParkingLot((long) 1,"test lot",100,100);
         Employee employee = new Employee();
         employee.setId(employeeId);
         String token = JwtUtil.generateToken(employee);

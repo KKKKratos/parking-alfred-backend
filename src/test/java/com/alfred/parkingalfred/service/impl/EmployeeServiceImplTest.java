@@ -35,13 +35,13 @@ public class EmployeeServiceImplTest {
 
     @Test
     public void should_return_employee_when_get_employee_by_name_and_password() throws JsonProcessingException {
-        String name = "name";
+        String mail = "mail";
         String password = "password";
         String encodedPassword = EncodingUtil.encodingByMd5(password);
 
         Employee employee = new Employee();
-        when(employeeRepository.findByNameAndPassword(name, encodedPassword)).thenReturn(employee);
-        Employee actualEmployee = employeeService.getEmployeeByNameAndPassword(name, password);
+        when(employeeRepository.findByMailAndPassword(mail, encodedPassword)).thenReturn(employee);
+        Employee actualEmployee = employeeService.getEmployeeByMailAndPassword(mail, password);
         assertEquals(objectMapper.writeValueAsString(employee), objectMapper.writeValueAsString(actualEmployee));
     }
     @Test
@@ -50,7 +50,7 @@ public class EmployeeServiceImplTest {
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(new Employee()));
       when(parkingLotRepository.findALLNotFullParkingLotRowsByEmployeeId(employeeId)).thenReturn(1);
       boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
-        assertEquals(true,result);
+        assertTrue(result);
     }
     @Test
     public void should_return_false_when_call_doesEmplyeeHasNotFullParkingLots_with_employeeId_and_he_or_she_has_not_notFull_parking_lot(){
@@ -58,6 +58,6 @@ public class EmployeeServiceImplTest {
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(new Employee()));
         when(parkingLotRepository.findALLNotFullParkingLotRowsByEmployeeId(employeeId)).thenReturn(0);
         boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
-        assertEquals(false,result);
+        assertFalse(result);
     }
 }
