@@ -9,7 +9,6 @@ import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.service.ParkingLotService;
 import com.alfred.parkingalfred.utils.JwtUtil;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -109,17 +108,17 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void should_return_employee_when_get_employee_by_id_with_role() throws Exception {
+    public void should_return_employee_when_get_self_employee() throws Exception {
         Long employeeId = 1L;
         RoleEnum role = RoleEnum.PARKING_BOY;
         Employee employee = new Employee();
         employee.setId(employeeId);
         employee.setRole(role.getCode());
 
-        when(employeeService.getEmployeeByIdWithRole(employeeId, employeeId, role)).thenReturn(employee);
+        when(employeeService.getEmployeeById(employeeId)).thenReturn(employee);
         String token = JwtUtil.generateToken(employee);
 
-        mockMvc.perform(get("/employees/{employeeId}", employeeId)
+        mockMvc.perform(get("/employee", employeeId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());

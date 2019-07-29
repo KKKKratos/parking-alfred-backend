@@ -1,7 +1,6 @@
 package com.alfred.parkingalfred.service;
 
 import com.alfred.parkingalfred.entity.Employee;
-import com.alfred.parkingalfred.enums.RoleEnum;
 
 public interface EmployeeService {
 
@@ -9,5 +8,5 @@ public interface EmployeeService {
 
   boolean doesEmployeeHasNotFullParkingLots(Long employeeId);
 
-  Employee getEmployeeByIdWithRole(Long id, Long selfId, RoleEnum selfRole);
+  Employee getEmployeeById(Long id);
 }

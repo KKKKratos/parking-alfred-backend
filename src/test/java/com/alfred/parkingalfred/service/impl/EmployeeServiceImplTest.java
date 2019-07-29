@@ -1,5 +1,6 @@
 package com.alfred.parkingalfred.service.impl;
 
+import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
@@ -67,14 +68,15 @@ public class EmployeeServiceImplTest {
     }
 
     @Test
-    public void should_get_employee_when_get_employee_by_id_with_role() throws JsonProcessingException {
+    public void should_get_employee_when_get_self_employee() throws JsonProcessingException {
         Long employeeId = 1L;
 
         Employee employee = new Employee();
         employee.setId(employeeId);
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(employee));
-        Employee actualEmployee = employeeService.getEmployeeByIdWithRole(employeeId, employeeId, RoleEnum.PARKING_BOY);
+        Employee actualEmployee = employeeService.getEmployeeById(employeeId);
 
-        assertEquals(objectMapper.writeValueAsString(employee), objectMapper.writeValueAsString(actualEmployee));
+        assertEquals(objectMapper.writeValueAsString(EmployeeToEmployeeVOConverter.convert(employee)),
+                objectMapper.writeValueAsString(EmployeeToEmployeeVOConverter.convert(actualEmployee)));
     }
 }

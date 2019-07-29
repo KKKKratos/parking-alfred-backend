@@ -8,7 +8,6 @@ import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.utils.EncodingUtil;
-import com.alfred.parkingalfred.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Supplier;
@@ -44,11 +43,8 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public Employee getEmployeeByIdWithRole(Long id, Long selfId, RoleEnum selfRole) {
-    Supplier<? extends RuntimeException> throwable = () -> new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED);
-    if (RoleEnum.MANAGER == selfRole || RoleEnum.ADMIN == selfRole) {
-      return employeeRepository.findById(id).orElseThrow(throwable);
-    }
-    return employeeRepository.findById(selfId).orElseThrow(throwable);
+  public Employee getEmployeeById(Long id) {
+    return employeeRepository.findById(id)
+            .orElseThrow(() -> new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
   }
 }

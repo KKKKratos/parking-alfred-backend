@@ -1,8 +1,8 @@
 package com.alfred.parkingalfred.controller;
 
+import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.ParkingLot;
-import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.service.ParkingLotService;
 import com.alfred.parkingalfred.utils.JwtUtil;
@@ -45,11 +45,10 @@ public class EmployeeController {
     return  ResultVOUtil.success(result);
   }
 
-  @GetMapping("/employees/{employeeId}")
-  public ResultVO getEmployeeByIdWithRole(@PathVariable Long employeeId) {
+  @GetMapping("/employee")
+  public ResultVO getSelfEmployee() {
       Long selfId = JwtUtil.getEmployeeId();
-      RoleEnum role = JwtUtil.getRole();
-      Employee employee = employeeService.getEmployeeByIdWithRole(employeeId, selfId, role);
-      return ResultVOUtil.success(employee);
+      Employee employee = employeeService.getEmployeeById(selfId);
+      return ResultVOUtil.success(EmployeeToEmployeeVOConverter.convert(employee));
   }
 }
