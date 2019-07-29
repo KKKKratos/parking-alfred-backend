@@ -10,9 +10,12 @@ import com.alfred.parkingalfred.exception.SecKillOrderException;
 import com.alfred.parkingalfred.repository.OrderRepository;
 import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.utils.RedisLock;
+import com.alfred.parkingalfred.utils.ReflectionUtil;
 import com.alfred.parkingalfred.utils.UUIDUtil;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +24,8 @@ public class OrderServiceImpl implements OrderService {
 
   @Autowired
   private RedisLock redisLock;
-  private static final int TIMEOUT = 10 * 1000;//超时时间 10s
+
+  private static final int TIMEOUT = 10 * 1000;
 
   private final OrderRepository orderRepository;
 
@@ -67,8 +71,26 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public List<Order> getOrders() {
-    return orderRepository.findAll();
+  public List<Order> getOrders(String sortProperty, String sortOrder, Integer filterStatus) {
+      List<Order> orders = orderRepository.findAll();
+      Stream<Order> stream = orders.stream();
+      if (filterStatus != null) {
+          stream = stream.filter(order -> order.getStatus().equals(filterStatus));
+      }
+      if (sortProperty == null || sortProperty.isEmpty()
+              || sortOrder == null || sortOrder.isEmpty()
+              || orders.isEmpty() || !ReflectionUtil.isComparablePropertyName(orders.get(0), sortProperty)) {
+          return stream.collect(Collectors.toList());
+      }
+      return stream.sorted((first, second) -> {
+          Comparable a = ReflectionUtil.getPropertyValue(first, sortProperty);
+          Comparable b = ReflectionUtil.getPropertyValue(second, sortProperty);
+          if (a == null || b == null)
+              return 0;
+          if ("ASC".equals(sortOrder.toUpperCase()))
+              return a.compareTo(b);
+          return b.compareTo(a);
+      }).collect(Collectors.toList());
   }
 
   private Order mapToOrder(CreateOrderDto createOrderDto) {
@@ -80,10 +102,5 @@ public class OrderServiceImpl implements OrderService {
     order.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
     order.setOrderId(UUIDUtil.generateUUID());
     return order;
-  }
-
-  @Override
-  public List<Order> getOrdersByStatus(Integer status) {
-    return orderRepository.findOrdersByStatus(status);
   }
 }
