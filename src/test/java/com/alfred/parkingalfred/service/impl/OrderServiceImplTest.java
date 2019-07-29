@@ -8,6 +8,7 @@ import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.exception.OrderNotExistedException;
 import com.alfred.parkingalfred.repository.OrderRepository;
 import com.alfred.parkingalfred.service.OrderService;
+import com.alfred.parkingalfred.utils.RedisLock;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,8 +36,11 @@ public class OrderServiceImplTest {
 
     private ObjectMapper objectMapper;
 
+    private RedisLock redisLock;
+
     @Before
     public void setUp() {
+        redisLock = Mockito.mock(RedisLock.class);
         orderRepository = mock(OrderRepository.class);
         orderService = new OrderServiceImpl(orderRepository);
         objectMapper = new ObjectMapper();
@@ -116,10 +122,12 @@ public class OrderServiceImplTest {
         orderExpected.setId(id);
         orderExpected.setStatus(OrderStatusEnum.WAIT_FOR_CONFIRM.getCode());
 
+        ReflectionTestUtils.setField(orderService,OrderServiceImpl.class,"redisLock",redisLock
+            ,RedisLock.class);
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
         when(orderRepository.save(any())).thenReturn(orderExpected);
+        when(redisLock.lock(any(String.class),any(String.class))).thenReturn(true);
         Order actualOrder = orderService.updateOrderStatusById(id, orderExpected);
-
         assertEquals(objectMapper.writeValueAsString(orderExpected), objectMapper.writeValueAsString(actualOrder));
     }
 }
