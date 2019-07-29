@@ -73,4 +73,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     BeanUtils.copyProperties(employeeResult,employeeVOResult);
     return employeeVOResult;
   }
+
+
+  public int getEmployeeCount(){
+    return employeeRepository.getEmployeeCount();
+  }
 }

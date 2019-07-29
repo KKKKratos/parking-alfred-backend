@@ -12,7 +12,9 @@ import com.alfred.parkingalfred.utils.JwtUtil;
 import com.alfred.parkingalfred.vo.EmployeeVO;
 import com.alfred.parkingalfred.vo.ResultVO;
 import com.alfred.parkingalfred.utils.ResultVOUtil;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +58,11 @@ public class EmployeeController {
   public ResultVO getEmployees(@RequestParam(value = "page", defaultValue = "1") Integer page,
       @RequestParam(value = "size", defaultValue = "10") Integer size) {
     List<EmployeeVO> employeeVOList = employeeService.getAllEmployeesByPageAndSize(page, size);
-    return ResultVOUtil.success(employeeVOList);
+    int totalCount = employeeService.getEmployeeCount();
+    Map<String,Object> objectMap = new HashMap<>();
+    objectMap.put("employees",employeeVOList);
+    objectMap.put("totalCount",totalCount);
+    return ResultVOUtil.success(objectMap);
   }
 
   @GetMapping("/employee")
