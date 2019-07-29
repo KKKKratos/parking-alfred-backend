@@ -1,6 +1,7 @@
 package com.alfred.parkingalfred.repository;
 
 import com.alfred.parkingalfred.entity.ParkingLot;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,4 +14,7 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot,Long> {
   int findALLNotFullParkingLotRowsByEmployeeId(Long employeeId);
 
   List<ParkingLot> findAllByIdIn(List<Long> idList);
+  
+  @Query(value = "select count(1) from parking_lot ",nativeQuery = true)
+  int getParkingLotCount();
 }
