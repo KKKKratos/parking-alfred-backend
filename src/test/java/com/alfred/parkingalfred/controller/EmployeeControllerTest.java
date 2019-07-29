@@ -96,7 +96,7 @@ public class EmployeeControllerTest {
         employee.setId(employeeId);
         String token = JwtUtil.generateToken(employee);
         when(parkingLotService.getParkingLotsByParkingBoyId(employeeId)).thenReturn(Collections.singletonList(parkingLot));
-        mockMvc.perform(get("/employee/{employeeId}/parking-lots/", employeeId)
+        mockMvc.perform(get("/employees/{employeeId}/parking-lots/", employeeId)
                 .header("Authorization", "Bearer " + token)
         ).andExpect(status().isOk());
     }
@@ -109,7 +109,7 @@ public class EmployeeControllerTest {
         employee.setId(employeeId);
         String token = JwtUtil.generateToken(employee);
         when(employeeService.doesEmployeeHasNotFullParkingLots(employeeId)).thenReturn(true);
-        mockMvc.perform(get("/employee/{employeeId}/parking-lots/", employeeId)
+        mockMvc.perform(get("/employees/{employeeId}/parking-lots/", employeeId)
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }
