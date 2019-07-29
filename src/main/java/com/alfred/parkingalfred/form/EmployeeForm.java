@@ -21,7 +21,6 @@ public class EmployeeForm {
   @NotEmpty(message = "mail must be not null")
   private String mail;
 
-  @NotEmpty(message = "password must be not null")
   private String password;
 
   private Integer role;
