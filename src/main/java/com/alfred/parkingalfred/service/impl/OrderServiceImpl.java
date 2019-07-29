@@ -53,12 +53,12 @@ public class OrderServiceImpl implements OrderService {
         .orElseThrow(() -> new OrderNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
     Integer statusResult = orderFinded.getStatus();
     if (order.getStatus().equals(OrderStatusEnum.CONFIRM)){
-      orderFinded.setStatus(order.getStatus());
+      this.updateOrder(orderFinded,order);
     }else{
       if (statusResult.equals(OrderStatusEnum.WAIT_FOR_CONFIRM)) {
         throw new SecKillOrderException(ResultEnum.RESOURCES_NOT_EXISTED);
       } else {
-        orderFinded.setStatus(order.getStatus());
+        this.updateOrder(orderFinded,order);
       }
       //unlock
       redisLock.unlock(id.toString(), String.valueOf(time));
@@ -85,5 +85,29 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public List<Order> getOrdersByStatus(Integer status) {
     return orderRepository.findOrdersByStatus(status);
+  }
+
+  private void updateOrder(Order orderFinded, Order order){
+      if (order.getType() != null) {
+          orderFinded.setStatus(order.getType());
+      }
+      if (order.getReservationTime() != null) {
+          orderFinded.setReservationTime(order.getReservationTime());
+      }
+      if (order.getCustomerAddress() != null) {
+          orderFinded.setCustomerAddress(order.getCustomerAddress());
+      }
+      if (order.getStatus() != null) {
+          orderFinded.setStatus(order.getStatus());
+      }
+      if (order.getEmployee() != null) {
+          orderFinded.setEmployee(order.getEmployee());
+      }
+      if (order.getCarNumber() != null) {
+          orderFinded.setCarNumber(order.getCarNumber());
+      }
+      if (order.getParkingLot() != null) {
+          orderFinded.setParkingLot(order.getParkingLot());
+      }
   }
 }
