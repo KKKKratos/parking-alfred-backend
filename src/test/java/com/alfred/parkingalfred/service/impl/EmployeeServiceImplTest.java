@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.enums.RoleEnum;
+import com.alfred.parkingalfred.form.EmployeeForm;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.EmployeeService;
@@ -111,5 +112,24 @@ public class EmployeeServiceImplTest {
     when(employeeRepository.findAll(any(Pageable.class))).thenReturn(employeePageActual);
     List<EmployeeVO> employeeListResult = employeeService.getAllEmployeesByPageAndSize(page, size);
     Assert.assertEquals(5, employeeListResult.size());
+  }
+
+  @Test
+  public void should_return_employee_when_call_createEmployee_with_true_param(){
+    EmployeeForm employeeForm = new EmployeeForm();
+    employeeForm.setName("test");
+    employeeForm.setStatus(RoleEnum.PARKING_BOY.getCode());
+    employeeForm.setMail("aqqsda@qq.com");
+    employeeForm.setPassword("123456");
+
+    Employee employeeExpected = new Employee();
+    employeeExpected.setId(1L);
+    employeeExpected.setName("test");
+    employeeExpected.setStatus(RoleEnum.PARKING_BOY.getCode());
+    employeeExpected.setMail("aqqsda@qq.com");
+
+    when(employeeRepository.save(any(Employee.class))).thenReturn(employeeExpected);
+    EmployeeVO employeeVOActual = employeeService.createEmployee(employeeForm);
+    Assert.assertEquals(employeeExpected.getId(),employeeVOActual.getId());
   }
 }

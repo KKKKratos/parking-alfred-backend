@@ -1,7 +1,9 @@
 package com.alfred.parkingalfred.exception;
 
 import com.alfred.parkingalfred.enums.ResultEnum;
+import lombok.Getter;
 
+@Getter
 public class OrderNotExistedException extends RuntimeException {
 
     private Integer code;

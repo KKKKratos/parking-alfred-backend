@@ -5,12 +5,14 @@ import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
+import com.alfred.parkingalfred.form.EmployeeForm;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.utils.EncodingUtil;
 import com.alfred.parkingalfred.vo.EmployeeVO;
 import java.util.List;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -60,5 +62,15 @@ public class EmployeeServiceImpl implements EmployeeService {
   public Employee getEmployeeById(Long id) {
     return employeeRepository.findById(id)
             .orElseThrow(() -> new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
+  }
+
+  @Override
+  public EmployeeVO createEmployee(EmployeeForm employeeForm) {
+    Employee employee = new Employee();
+    BeanUtils.copyProperties(employeeForm,employee);
+    Employee employeeResult = employeeRepository.save(employee);
+    EmployeeVO employeeVOResult = new EmployeeVO();
+    BeanUtils.copyProperties(employeeResult,employeeVOResult);
+    return employeeVOResult;
   }
 }

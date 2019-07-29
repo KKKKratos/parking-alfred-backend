@@ -3,6 +3,8 @@ package com.alfred.parkingalfred.controller;
 import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.ParkingLot;
+import com.alfred.parkingalfred.enums.ResultEnum;
+import com.alfred.parkingalfred.exception.IncorrectParameterException;
 import com.alfred.parkingalfred.form.EmployeeForm;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.service.ParkingLotService;
@@ -65,8 +67,11 @@ public class EmployeeController {
   }
 
   @PostMapping("/employees")
-  public ResultVO createEmployee(@Valid EmployeeForm employeeForm, BindingResult bindingResult){
-      Employee employee = employeeService.createEmployee(employeeForm);
-      return ResultVOUtil.success(employee);
+  public ResultVO createEmployee(@Valid @RequestBody EmployeeForm employeeForm, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      throw new IncorrectParameterException(ResultEnum.PARAM_ERROR);
+    }
+    EmployeeVO employeeVO = employeeService.createEmployee(employeeForm);
+    return ResultVOUtil.success(employeeVO);
   }
 }
