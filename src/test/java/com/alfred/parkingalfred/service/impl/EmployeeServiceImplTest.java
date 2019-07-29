@@ -6,11 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.alfred.parkingalfred.entity.Employee;
+import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.form.EmployeeForm;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
@@ -32,7 +33,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -131,5 +131,31 @@ public class EmployeeServiceImplTest {
     when(employeeRepository.save(any(Employee.class))).thenReturn(employeeExpected);
     EmployeeVO employeeVOActual = employeeService.createEmployee(employeeForm);
     Assert.assertEquals(employeeExpected.getId(),employeeVOActual.getId());
+  }
+
+  @Test
+  public void should_add_parking_lots_to_employee() throws JsonProcessingException {
+    Long id = 1L;
+    Employee beforeUpdateEmployee = new Employee();
+    beforeUpdateEmployee.setId(id);
+    beforeUpdateEmployee.setParkingLots(new ArrayList<>());
+    List<Long> parkingLotIdList = new ArrayList<Long>() {{
+      add(1L);
+      add(2L);
+    }};
+    List<ParkingLot> parkingLots = new ArrayList<ParkingLot>() {{
+      add(new ParkingLot());
+      add((new ParkingLot()));
+    }};
+
+    Employee afterUpdateEmployee = new Employee();
+    afterUpdateEmployee.setId(id);
+    afterUpdateEmployee.setParkingLots(parkingLots);
+    when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(beforeUpdateEmployee));
+    when(parkingLotRepository.findAllByIdIn(anyList())).thenReturn(parkingLots);
+    Employee actualEmployee = employeeService.updateEmployeeParkingLots(id, parkingLotIdList);
+
+    assertEquals(objectMapper.writeValueAsString(afterUpdateEmployee),
+            objectMapper.writeValueAsString(actualEmployee));
   }
 }
