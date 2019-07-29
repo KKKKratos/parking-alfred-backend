@@ -34,6 +34,7 @@ public class Employee {
 
   private Integer status;
 
+  @Column(unique = true)
   private String mail;
 
   private String password;

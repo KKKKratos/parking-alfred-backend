@@ -1,9 +1,9 @@
 package com.alfred.parkingalfred.service;
 
 import com.alfred.parkingalfred.entity.Employee;
+import com.alfred.parkingalfred.form.EmployeeForm;
 import com.alfred.parkingalfred.vo.EmployeeVO;
 import java.util.List;
-import org.springframework.data.domain.Page;
 
 public interface EmployeeService {
 
@@ -11,7 +11,9 @@ public interface EmployeeService {
 
   boolean doesEmployeeHasNotFullParkingLots(Long employeeId);
 
+  List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page, Integer size);
 
-  List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page,Integer size);
   Employee getEmployeeById(Long id);
+
+  EmployeeVO createEmployee(EmployeeForm employeeFormmployee);
 }
