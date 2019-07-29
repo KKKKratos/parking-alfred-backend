@@ -1,6 +1,7 @@
 package com.alfred.parkingalfred.controller;
 
 import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
+import com.alfred.parkingalfred.converter.ParkingLotToParkingLotVOConverter;
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.ResultEnum;
@@ -10,11 +11,13 @@ import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.service.ParkingLotService;
 import com.alfred.parkingalfred.utils.JwtUtil;
 import com.alfred.parkingalfred.vo.EmployeeVO;
+import com.alfred.parkingalfred.vo.ParkingLotVo;
 import com.alfred.parkingalfred.vo.ResultVO;
 import com.alfred.parkingalfred.utils.ResultVOUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -78,6 +81,17 @@ public class EmployeeController {
       throw new IncorrectParameterException(ResultEnum.PARAM_ERROR);
     }
     EmployeeVO employeeVO = employeeService.createEmployee(employeeForm);
+    return ResultVOUtil.success(employeeVO);
+  }
+
+  @PutMapping("/employees/{employeeId}/parking-lots")
+  public ResultVO updateEmployeeParkingLots(@PathVariable Long employeeId, @RequestBody List<Long> parkingLotIdList) {
+    Employee employee = employeeService.updateEmployeeParkingLots(employeeId, parkingLotIdList);
+    EmployeeVO employeeVO = EmployeeToEmployeeVOConverter.convert(employee);
+    List<ParkingLotVo> parkingLotVos = employee.getParkingLots().stream()
+            .map(ParkingLotToParkingLotVOConverter::convert)
+            .collect(Collectors.toList());
+    employeeVO.setParkingLotVos(parkingLotVos);
     return ResultVOUtil.success(employeeVO);
   }
 }
