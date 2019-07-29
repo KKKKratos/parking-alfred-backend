@@ -44,23 +44,25 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   public Order updateOrderStatusById(Long id, Order order) {
-
     //lock
     long time = System.currentTimeMillis() + TIMEOUT;
     if (!redisLock.lock(id.toString(), String.valueOf(time))) {
       throw new SecKillOrderException(ResultEnum.RESOURCES_NOT_EXISTED);
     }
-
     Order orderFinded = orderRepository.findById(id)
         .orElseThrow(() -> new OrderNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
     Integer statusResult = orderFinded.getStatus();
-    if (statusResult.equals(OrderStatusEnum.CONFIRM)){
-      throw new SecKillOrderException(ResultEnum.RESOURCES_NOT_EXISTED);
-    }else{
+    if (order.getStatus().equals(OrderStatusEnum.CONFIRM)){
       orderFinded.setStatus(order.getStatus());
+    }else{
+      if (statusResult.equals(OrderStatusEnum.WAIT_FOR_CONFIRM)) {
+        throw new SecKillOrderException(ResultEnum.RESOURCES_NOT_EXISTED);
+      } else {
+        orderFinded.setStatus(order.getStatus());
+      }
+      //unlock
+      redisLock.unlock(id.toString(), String.valueOf(time));
     }
-    //unlock
-    redisLock.unlock(id.toString(),String.valueOf(time));
     return orderRepository.save(orderFinded);
   }
 
@@ -81,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-    public List<Order> getOrdersByStatus(Integer status){
-        return orderRepository.findOrdersByStatus(status);
+  public List<Order> getOrdersByStatus(Integer status) {
+    return orderRepository.findOrdersByStatus(status);
   }
 }
