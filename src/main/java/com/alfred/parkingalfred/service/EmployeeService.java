@@ -16,4 +16,5 @@ public interface EmployeeService {
   Employee getEmployeeById(Long id);
 
   EmployeeVO createEmployee(EmployeeForm employeeFormmployee);
+  int getEmployeeCount();
 }
