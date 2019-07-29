@@ -1,20 +1,25 @@
 package com.alfred.parkingalfred.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.utils.EncodingUtil;
+import com.alfred.parkingalfred.vo.EmployeeVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 public class EmployeeServiceImplTest {
 
@@ -59,5 +64,23 @@ public class EmployeeServiceImplTest {
         when(parkingLotRepository.findALLNotFullParkingLotRowsByEmployeeId(employeeId)).thenReturn(0);
         boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
         assertEquals(false,result);
+    }
+
+    @Test public void shoule_return_employeeList_when_call_getAllEmployeesByPageAndSize_with_page_and_size(){
+        int page = 1,size=5;
+        PageRequest request = PageRequest.of(page,size);
+        List<Employee> employeeList = new ArrayList<Employee>(){{
+            add(new Employee());
+            add(new Employee());
+            add(new Employee());
+            add(new Employee());
+            add(new Employee());
+        }};
+        PageImpl<Employee> employeePageActual = new PageImpl<>(employeeList);
+        when(employeeRepository.findAll(request)).thenReturn(employeePageActual);
+        List<EmployeeVO> employeeListResult = employeeService.getAllEmployeesByPageAndSize(page,size);
+        Assert.assertEquals(5,employeeListResult.size());
+
+
     }
 }

@@ -9,19 +9,24 @@ import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.service.ParkingLotService;
 import com.alfred.parkingalfred.utils.JwtUtil;
 
+import com.alfred.parkingalfred.vo.EmployeeVO;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -105,5 +110,20 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/employee/{employeeId}/parking-lots/",employeeId)
             .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
+    }
+    @Test
+    public void should_return_EmployeeVO_List_when_call_getEmployees_API()throws Exception {
+        Long employeeId= 1L;
+        ParkingLot parkingLot = new ParkingLot((long) 1,"test lot",100,100);
+        Employee employee = new Employee();
+        employee.setId(employeeId);
+        String token = JwtUtil.generateToken(employee);
+//        PageRequest pageRequest = PageRequest.of(0,3);
+        List<EmployeeVO> employeeVOList = new ArrayList<>();
+        employeeVOList.add(new EmployeeVO());
+        when(employeeService.getAllEmployeesByPageAndSize(1,3)).thenReturn(employeeVOList);
+        mockMvc.perform(get("/employees",1,3)
+            .header("Authorization", "Bearer " + token))
+            .andExpect(status().isOk());
     }
 }

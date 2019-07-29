@@ -5,6 +5,7 @@ import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.service.ParkingLotService;
 import com.alfred.parkingalfred.utils.JwtUtil;
+import com.alfred.parkingalfred.vo.EmployeeVO;
 import com.alfred.parkingalfred.vo.ResultVO;
 import com.alfred.parkingalfred.utils.ResultVOUtil;
 import java.util.List;
@@ -42,5 +43,10 @@ public class EmployeeController {
     boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
     return  ResultVOUtil.success(result);
   }
-
+  @GetMapping(value = "/employees")
+  public ResultVO getEmployees(@RequestParam(value = "page",defaultValue = "1")Integer page,
+      @RequestParam(value = "size",defaultValue = "10")Integer size){
+      List<EmployeeVO> employeeVOList = employeeService.getAllEmployeesByPageAndSize(page,size);
+    return  ResultVOUtil.success(employeeVOList);
+  }
 }
