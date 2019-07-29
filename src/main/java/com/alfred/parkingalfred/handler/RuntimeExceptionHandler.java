@@ -1,6 +1,7 @@
 package com.alfred.parkingalfred.handler;
 
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
+import com.alfred.parkingalfred.exception.SecKillOrderException;
 import com.alfred.parkingalfred.utils.ResultVOUtil;
 import com.alfred.parkingalfred.vo.ResultVO;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,11 @@ public class RuntimeExceptionHandler {
   @ExceptionHandler(value = EmployeeNotExistedException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public ResultVO handleEmployeeNotExistedException(EmployeeNotExistedException e){
+    return ResultVOUtil.error(e.getCode(),e.getMessage());
+  }
+  @ExceptionHandler(value = SecKillOrderException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ResultVO handleSecKillOrderException(SecKillOrderException e){
     return ResultVOUtil.error(e.getCode(),e.getMessage());
   }
 }
