@@ -10,6 +10,7 @@ import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.utils.EncodingUtil;
+import com.alfred.parkingalfred.utils.UUIDUtil;
 import com.alfred.parkingalfred.vo.EmployeeVO;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
@@ -61,16 +62,23 @@ public class EmployeeServiceImpl implements EmployeeService {
   @Override
   public Employee getEmployeeById(Long id) {
     return employeeRepository.findById(id)
-            .orElseThrow(() -> new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
+        .orElseThrow(() -> new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
   }
 
   @Override
   public EmployeeVO createEmployee(EmployeeForm employeeForm) {
     Employee employee = new Employee();
-    BeanUtils.copyProperties(employeeForm,employee);
+    BeanUtils.copyProperties(employeeForm, employee);
+    employee.setPassword(UUIDUtil.generateUUID()
+        .replace("-", "").substring(0, 8));
     Employee employeeResult = employeeRepository.save(employee);
     EmployeeVO employeeVOResult = new EmployeeVO();
-    BeanUtils.copyProperties(employeeResult,employeeVOResult);
+    BeanUtils.copyProperties(employeeResult, employeeVOResult);
     return employeeVOResult;
+  }
+
+
+  public int getEmployeeCount() {
+    return employeeRepository.getEmployeeCount();
   }
 }
