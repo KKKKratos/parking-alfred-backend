@@ -86,24 +86,42 @@ public class EmployeeControllerTest {
     public void should_return_parkingLots_when_call_getParkingLotsByEmployeeId_API_with_true_param()
             throws Exception {
         ParkingLot parkingLot = new ParkingLot((long) 1, "test lot", 100, 100);
-        Long employeeId= 1L;
+        Long employeeId = 1L;
         Employee employee = new Employee();
         employee.setId(employeeId);
         String token = JwtUtil.generateToken(employee);
         when(parkingLotService.getParkingLotsByParkingBoyId(employeeId)).thenReturn(Collections.singletonList(parkingLot));
         mockMvc.perform(get("/employee/{employeeId}/parking-lots/", employeeId)
                 .header("Authorization", "Bearer " + token)
-               ).andExpect(status().isOk());
+        ).andExpect(status().isOk());
     }
+
     @Test
-    public void should_return_true_when_call_getStatusOfEmployeeById_API_with_true_param()throws Exception {
-        Long employeeId= 1L;
+    public void should_return_true_when_call_getStatusOfEmployeeById_API_with_true_param() throws Exception {
+        Long employeeId = 1L;
         Employee employee = new Employee();
         employee.setId(employeeId);
         String token = JwtUtil.generateToken(employee);
         when(employeeService.doesEmployeeHasNotFullParkingLots(employeeId)).thenReturn(true);
-        mockMvc.perform(get("/employee/{employeeId}/parking-lots/",employeeId)
-            .header("Authorization", "Bearer " + token))
+        mockMvc.perform(get("/employee/{employeeId}/parking-lots/", employeeId)
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_return_employee_when_get_employee_by_id_with_role() throws Exception {
+        Long employeeId = 1L;
+        RoleEnum role = RoleEnum.PARKING_BOY;
+        Employee employee = new Employee();
+        employee.setId(employeeId);
+        employee.setRole(role.getCode());
+
+        when(employeeService.getEmployeeByIdWithRole(employeeId, employeeId, role)).thenReturn(employee);
+        String token = JwtUtil.generateToken(employee);
+
+        mockMvc.perform(get("/employees/{employeeId}", employeeId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }
 }

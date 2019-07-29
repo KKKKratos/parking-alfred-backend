@@ -2,6 +2,7 @@ package com.alfred.parkingalfred.controller;
 
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.ParkingLot;
+import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.service.ParkingLotService;
 import com.alfred.parkingalfred.utils.JwtUtil;
@@ -44,4 +45,11 @@ public class EmployeeController {
     return  ResultVOUtil.success(result);
   }
 
+  @GetMapping("/employees/{employeeId}")
+  public ResultVO getEmployeeByIdWithRole(@PathVariable Long employeeId) {
+      Long selfId = JwtUtil.getEmployeeId();
+      RoleEnum role = JwtUtil.getRole();
+      Employee employee = employeeService.getEmployeeByIdWithRole(employeeId, selfId, role);
+      return ResultVOUtil.success(employee);
+  }
 }
