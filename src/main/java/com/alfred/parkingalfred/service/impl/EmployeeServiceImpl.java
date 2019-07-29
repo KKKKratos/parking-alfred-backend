@@ -48,11 +48,17 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public Employee getEmployeeById(Long id) {
-    return employeeRepository.findById(id)
-            .orElseThrow(() -> new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
+  public List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page, Integer size) {
+    PageRequest pageRequest = PageRequest.of(page - 1, size);
+    Page<Employee> employeePage = employeeRepository.findAll(pageRequest);
     List<EmployeeVO> employeeVOList = EmployeeToEmployeeVOConverter
         .convert(employeePage.getContent());
     return employeeVOList;
+  }
+
+  @Override
+  public Employee getEmployeeById(Long id) {
+    return employeeRepository.findById(id)
+            .orElseThrow(() -> new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
   }
 }

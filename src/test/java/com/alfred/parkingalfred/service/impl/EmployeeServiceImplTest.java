@@ -1,7 +1,12 @@
 package com.alfred.parkingalfred.service.impl;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -20,74 +25,91 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class EmployeeServiceImplTest {
 
-    private EmployeeRepository employeeRepository;
+  private EmployeeRepository employeeRepository;
 
-    private ParkingLotRepository parkingLotRepository;
-    private EmployeeService employeeService;
+  private ParkingLotRepository parkingLotRepository;
+  private EmployeeService employeeService;
 
-    private ObjectMapper objectMapper;
+  private ObjectMapper objectMapper;
 
-    @Before
-    public void setUp() {
-        employeeRepository = mock(EmployeeRepository.class);
-        parkingLotRepository = mock(ParkingLotRepository.class);
-        employeeService = new EmployeeServiceImpl(employeeRepository, parkingLotRepository);
-        objectMapper = new ObjectMapper();
-    }
+  @Before
+  public void setUp() {
+    employeeRepository = mock(EmployeeRepository.class);
+    parkingLotRepository = mock(ParkingLotRepository.class);
+    employeeService = new EmployeeServiceImpl(employeeRepository, parkingLotRepository);
+    objectMapper = new ObjectMapper();
+  }
 
-    @Test
-    public void should_return_employee_when_get_employee_by_name_and_password() throws JsonProcessingException {
-        String mail = "mail";
-        String password = "password";
-        String encodedPassword = EncodingUtil.encodingByMd5(password);
+  @Test
+  public void should_return_employee_when_get_employee_by_name_and_password()
+      throws JsonProcessingException {
+    String mail = "mail";
+    String password = "password";
+    String encodedPassword = EncodingUtil.encodingByMd5(password);
 
-        Employee employee = new Employee();
-        when(employeeRepository.findByMailAndPassword(mail, encodedPassword)).thenReturn(employee);
-        Employee actualEmployee = employeeService.getEmployeeByMailAndPassword(mail, password);
-        assertEquals(objectMapper.writeValueAsString(employee), objectMapper.writeValueAsString(actualEmployee));
-    }
+    Employee employee = new Employee();
+    when(employeeRepository.findByMailAndPassword(mail, encodedPassword)).thenReturn(employee);
+    Employee actualEmployee = employeeService.getEmployeeByMailAndPassword(mail, password);
+    assertEquals(objectMapper.writeValueAsString(employee),
+        objectMapper.writeValueAsString(actualEmployee));
+  }
 
-    @Test
-    public void should_return_true_when_call_doesEmployeeHasNotFullParkingLots_with_employeeId_and_he_or_she_has_notFull_parking_lot() {
-        Long employeeId = 1L;
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(new Employee()));
-        when(parkingLotRepository.findALLNotFullParkingLotRowsByEmployeeId(employeeId)).thenReturn(1);
-        boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
-        assertTrue(result);
-    }
+  @Test
+  public void should_return_true_when_call_doesEmployeeHasNotFullParkingLots_with_employeeId_and_he_or_she_has_notFull_parking_lot() {
+    Long employeeId = 1L;
+    when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(new Employee()));
+    when(parkingLotRepository.findALLNotFullParkingLotRowsByEmployeeId(employeeId)).thenReturn(1);
+    boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
+    assertTrue(result);
+  }
 
-    @Test
-    public void should_return_false_when_call_doesEmployeeHasNotFullParkingLots_with_employeeId_and_he_or_she_has_not_notFull_parking_lot() {
-        Long employeeId = 1L;
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(new Employee()));
-        when(parkingLotRepository.findALLNotFullParkingLotRowsByEmployeeId(employeeId)).thenReturn(0);
-        boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
-        assertFalse(result);
-    }
+  @Test
+  public void should_return_false_when_call_doesEmployeeHasNotFullParkingLots_with_employeeId_and_he_or_she_has_not_notFull_parking_lot() {
+    Long employeeId = 1L;
+    when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(new Employee()));
+    when(parkingLotRepository.findALLNotFullParkingLotRowsByEmployeeId(employeeId)).thenReturn(0);
+    boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
+    assertFalse(result);
+  }
 
-    @Test
-    public void should_get_employee_when_get_self_employee() throws JsonProcessingException {
-        Long employeeId = 1L;
+  @Test
+  public void should_get_employee_when_get_self_employee() throws JsonProcessingException {
+    Long employeeId = 1L;
 
-        Employee employee = new Employee();
-        employee.setId(employeeId);
-        when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(employee));
-        Employee actualEmployee = employeeService.getEmployeeById(employeeId);
+    Employee employee = new Employee();
+    employee.setId(employeeId);
+    when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(employee));
+    Employee actualEmployee = employeeService.getEmployeeById(employeeId);
 
-        assertEquals(objectMapper.writeValueAsString(EmployeeToEmployeeVOConverter.convert(employee)),
-                objectMapper.writeValueAsString(EmployeeToEmployeeVOConverter.convert(actualEmployee)));
-        when(employeeRepository.findAll(request)).thenReturn(employeePageActual);
-        List<EmployeeVO> employeeListResult = employeeService.getAllEmployeesByPageAndSize(page,size);
-        Assert.assertEquals(5,employeeListResult.size());
+    assertEquals(objectMapper.writeValueAsString(EmployeeToEmployeeVOConverter.convert(employee)),
+        objectMapper.writeValueAsString(EmployeeToEmployeeVOConverter.convert(actualEmployee)));
+  }
 
-
-    }
+  @Test
+  public void should_return_employeeVOList_when_call_getAllEmployeesByPageAndSize_with_page_and_size() {
+    int page = 1, size = 5;
+    List<Employee> employeeList = new ArrayList<Employee>() {{
+      add(new Employee());
+      add(new Employee());
+      add(new Employee());
+      add(new Employee());
+      add(new Employee());
+    }};
+    PageImpl<Employee> employeePageActual = new PageImpl<>(employeeList);
+    when(employeeRepository.findAll(any(Pageable.class))).thenReturn(employeePageActual);
+    List<EmployeeVO> employeeListResult = employeeService.getAllEmployeesByPageAndSize(page, size);
+    Assert.assertEquals(5, employeeListResult.size());
+  }
 }

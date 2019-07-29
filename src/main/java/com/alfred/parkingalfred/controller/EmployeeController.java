@@ -29,7 +29,8 @@ public class EmployeeController {
 
   @PostMapping(value = "/login")
   public ResultVO login(@RequestBody Employee loginEmployee) {
-    Employee employee = employeeService.getEmployeeByMailAndPassword(loginEmployee.getMail(), loginEmployee.getPassword());
+    Employee employee = employeeService
+        .getEmployeeByMailAndPassword(loginEmployee.getMail(), loginEmployee.getPassword());
     String token = JwtUtil.generateToken(employee);
     return ResultVOUtil.success(token);
   }
@@ -37,24 +38,26 @@ public class EmployeeController {
   @GetMapping(value = "/employee/{employeeId}/parking-lots")
   public ResultVO getParkingLotsByEmployeeId(@PathVariable Long employeeId) {
     List<ParkingLot> parkingLots = parkingLotService.getParkingLotsByParkingBoyId(employeeId);
-    return  ResultVOUtil.success(parkingLots);
+    return ResultVOUtil.success(parkingLots);
   }
 
   @GetMapping(value = "/employee/{employeeId}/status")
-  public ResultVO getEmployeeParkingLotStatus(@PathVariable Long employeeId){
+  public ResultVO getEmployeeParkingLotStatus(@PathVariable Long employeeId) {
     boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
-    return  ResultVOUtil.success(result);
+    return ResultVOUtil.success(result);
   }
+
   @GetMapping(value = "/employees")
-  public ResultVO getEmployees(@RequestParam(value = "page",defaultValue = "1")Integer page,
-      @RequestParam(value = "size",defaultValue = "10")Integer size){
-      List<EmployeeVO> employeeVOList = employeeService.getAllEmployeesByPageAndSize(page,size);
-    return  ResultVOUtil.success(employeeVOList);
+  public ResultVO getEmployees(@RequestParam(value = "page", defaultValue = "1") Integer page,
+      @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    List<EmployeeVO> employeeVOList = employeeService.getAllEmployeesByPageAndSize(page, size);
+    return ResultVOUtil.success(employeeVOList);
   }
+
   @GetMapping("/employee")
   public ResultVO getSelfEmployee() {
-      Long selfId = JwtUtil.getEmployeeId();
-      Employee employee = employeeService.getEmployeeById(selfId);
-      return ResultVOUtil.success(EmployeeToEmployeeVOConverter.convert(employee));
+    Long selfId = JwtUtil.getEmployeeId();
+    Employee employee = employeeService.getEmployeeById(selfId);
+    return ResultVOUtil.success(EmployeeToEmployeeVOConverter.convert(employee));
   }
 }
