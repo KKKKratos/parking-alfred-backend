@@ -4,7 +4,9 @@ import com.alfred.parkingalfred.entity.Employee;
 
 public interface EmployeeService {
 
-  Employee getEmployeeByNameAndPassword(String name, String password);
+  Employee getEmployeeByMailAndPassword(String mail, String password);
 
   boolean doesEmployeeHasNotFullParkingLots(Long employeeId);
+
+  Employee getEmployeeById(Long id);
 }

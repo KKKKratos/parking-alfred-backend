@@ -1,5 +1,6 @@
 package com.alfred.parkingalfred.controller;
 
+import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.service.EmployeeService;
@@ -27,7 +28,7 @@ public class EmployeeController {
 
   @PostMapping(value = "/login")
   public ResultVO login(@RequestBody Employee loginEmployee) {
-    Employee employee = employeeService.getEmployeeByNameAndPassword(loginEmployee.getName(), loginEmployee.getPassword());
+    Employee employee = employeeService.getEmployeeByMailAndPassword(loginEmployee.getMail(), loginEmployee.getPassword());
     String token = JwtUtil.generateToken(employee);
     return ResultVOUtil.success(token);
   }
@@ -37,10 +38,17 @@ public class EmployeeController {
     List<ParkingLot> parkingLots = parkingLotService.getParkingLotsByParkingBoyId(employeeId);
     return  ResultVOUtil.success(parkingLots);
   }
+
   @GetMapping(value = "/employee/{employeeId}/status")
   public ResultVO getEmployeeParkingLotStatus(@PathVariable Long employeeId){
     boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
     return  ResultVOUtil.success(result);
   }
 
+  @GetMapping("/employee")
+  public ResultVO getSelfEmployee() {
+      Long selfId = JwtUtil.getEmployeeId();
+      Employee employee = employeeService.getEmployeeById(selfId);
+      return ResultVOUtil.success(EmployeeToEmployeeVOConverter.convert(employee));
+  }
 }
