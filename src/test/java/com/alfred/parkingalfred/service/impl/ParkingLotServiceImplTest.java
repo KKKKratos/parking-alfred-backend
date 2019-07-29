@@ -3,6 +3,7 @@ package com.alfred.parkingalfred.service.impl;
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
+import com.alfred.parkingalfred.form.ParkingLotForm;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.BeanUtils;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public  class ParkingLotServiceImplTest {
@@ -52,5 +54,23 @@ public  class ParkingLotServiceImplTest {
         employeeRepository.findById(Mockito.anyLong()
     )).thenReturn(empty);
       List<ParkingLot>parkingLotsResult = parkingLotServiceImpl.getParkingLotsByParkingBoyId(1L);
+  }
+  @Test
+  public void should_return_parkingLot_when_call_createParkingLot_API_with_true_param(){
+    ParkingLotForm parkingLotForm = new ParkingLotForm();
+    parkingLotForm.setCapacity(100);
+    parkingLotForm.setName("test停车场");
+    parkingLotForm.setOccupied(99);
+
+    ParkingLot parkingLotExpected = new ParkingLot();
+    BeanUtils.copyProperties(parkingLotForm,parkingLotExpected);
+    parkingLotExpected.setId(1L);
+    Mockito.when(
+        parkingLotRepository.save(Mockito.any(ParkingLot.class))
+    ).thenReturn(parkingLotExpected);
+    ReflectionTestUtils.setField(parkingLotServiceImpl,ParkingLotServiceImpl.class
+        ,"parkingLotRepository",parkingLotRepository,ParkingLotRepository.class);
+    ParkingLot parkingLotResult = parkingLotServiceImpl.createParkingLot(parkingLotForm);
+    Assert.assertEquals(parkingLotExpected.getId(),parkingLotResult.getId());
   }
 }
