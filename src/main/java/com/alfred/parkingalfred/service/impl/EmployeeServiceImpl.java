@@ -1,5 +1,6 @@
 package com.alfred.parkingalfred.service.impl;
 
+import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.enums.RoleEnum;
@@ -8,6 +9,10 @@ import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.utils.EncodingUtil;
+import com.alfred.parkingalfred.vo.EmployeeVO;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Supplier;
@@ -40,6 +45,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
     int result = parkingLotRepository.findALLNotFullParkingLotRowsByEmployeeId(employeeId);
     return result > 0;
+  }
+
+  @Override
+  public List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page, Integer size) {
+    PageRequest pageRequest = PageRequest.of(page - 1, size);
+    Page<Employee> employeePage = employeeRepository.findAll(pageRequest);
+    List<EmployeeVO> employeeVOList = EmployeeToEmployeeVOConverter
+        .convert(employeePage.getContent());
+    return employeeVOList;
   }
 
   @Override
