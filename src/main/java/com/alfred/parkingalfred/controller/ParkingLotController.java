@@ -36,10 +36,10 @@ public class ParkingLotController {
   public ResultVO getAllParkingLots(@RequestParam(name = "page",defaultValue = "1")Integer page
       ,@RequestParam(name = "size",defaultValue = "10")Integer size){
     List<ParkingLot> parkingLotList = parkingLotService.getAllParkingLotsByPageAndSize(page,size);
-    int totoalCount = parkingLotService.getParkingLotCount();
+    int totalCount = parkingLotService.getParkingLotCount();
     HashMap<String, Object> reuslt = new HashMap<>();
     reuslt.put("parkingLots",parkingLotList);
-    reuslt.put("totalCount",totoalCount);
+    reuslt.put("totalCount",totalCount);
     return ResultVOUtil.success(reuslt);
   }
 }
