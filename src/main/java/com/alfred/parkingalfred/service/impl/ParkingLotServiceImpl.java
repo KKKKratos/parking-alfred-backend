@@ -2,8 +2,10 @@ package com.alfred.parkingalfred.service.impl;
 
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.ParkingLot;
+import com.alfred.parkingalfred.enums.ParkingLotStatusEnum;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
+import com.alfred.parkingalfred.exception.OrderNotExistedException;
 import com.alfred.parkingalfred.form.ParkingLotForm;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
@@ -40,6 +42,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
   public ParkingLot createParkingLot(ParkingLotForm parkingLotForm) {
     ParkingLot parkingLot = new ParkingLot();
     BeanUtils.copyProperties(parkingLotForm, parkingLot);
+    parkingLot.setStatus(ParkingLotStatusEnum.USABLE.getCode());
     return  parkingLotRepository.save(parkingLot);
   }
 
@@ -56,5 +59,28 @@ public class ParkingLotServiceImpl implements ParkingLotService {
   @Override
   public int getParkingLotCount() {
     return parkingLotRepository.getParkingLotCount();
+  }
+
+  @Override
+  public ParkingLot updateParkingLotById(Long id, ParkingLot parkingLot) {
+    ParkingLot parkingLotFinded = parkingLotRepository.findById(id)
+            .orElseThrow(() -> new OrderNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
+    updateParkingLot(parkingLot, parkingLotFinded);
+    return parkingLotRepository.save(parkingLotFinded);
+  }
+
+  private void updateParkingLot(ParkingLot parkingLot, ParkingLot parkingLotFinded) {
+    if(parkingLot.getName()!= null){
+      parkingLotFinded.setName(parkingLot.getName());
+    }
+    if (parkingLot.getCapacity() != null) {
+      parkingLotFinded.setCapacity(parkingLot.getCapacity());
+    }
+    if (parkingLot.getOccupied() != null) {
+      parkingLotFinded.setOccupied(parkingLot.getOccupied());
+    }
+    if (parkingLot.getStatus() != null) {
+      parkingLotFinded.setStatus(parkingLot.getStatus());
+    }
   }
 }

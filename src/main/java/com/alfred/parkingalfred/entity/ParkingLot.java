@@ -28,6 +28,8 @@ public class ParkingLot {
 
   private Integer occupied;
 
+  private Integer status;
+
   @ManyToMany(mappedBy = "parkingLots")
   @JsonIgnore
   private List<Employee> employees;

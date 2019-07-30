@@ -12,11 +12,7 @@ import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ParkingLotController {
@@ -42,5 +38,10 @@ public class ParkingLotController {
     reuslt.put("parkingLots",parkingLotList);
     reuslt.put("totalCount",totalCount);
     return ResultVOUtil.success(reuslt);
+  }
+  @PutMapping(value = "/parking-lots/{id}")
+  public ResultVO updateParkingLotById(@PathVariable Long id, @RequestBody ParkingLot parkingLot) {
+    ParkingLot parkingLotUpdated = parkingLotService.updateParkingLotById(id, parkingLot);
+    return ResultVOUtil.success(parkingLotUpdated);
   }
 }

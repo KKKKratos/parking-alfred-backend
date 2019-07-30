@@ -2,13 +2,14 @@ package com.alfred.parkingalfred.controller;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.form.ParkingLotForm;
 import com.alfred.parkingalfred.service.ParkingLotService;
+import com.alfred.parkingalfred.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,5 +83,29 @@ public class ParkingLotControllerTest {
               .param("name", name)
               .accept(MediaType.APPLICATION_JSON))
               .andExpect(status().isOk());
+  }
+
+  public void should_return_updated_parkingLot_when_update_by_id() throws Exception {
+    Long id = 1L;
+    ParkingLot parkingLot = new ParkingLot();
+    parkingLot.setId(id);
+
+    ParkingLot parkingLotExpected = new ParkingLot();
+    parkingLotExpected.setId(id);
+    parkingLotExpected.setStatus(2);
+
+    when(parkingLotService.updateParkingLotById((long) 1, parkingLot))
+            .thenReturn(parkingLotExpected);
+
+    Employee employee = new Employee();
+    employee.setId(id);
+    String token = JwtUtil.generateToken(employee);
+
+    mockMvc.perform(put("/parking-lots/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(parkingLot))
+            .header("Authorization", "Bearer " + token)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
   }
 }
