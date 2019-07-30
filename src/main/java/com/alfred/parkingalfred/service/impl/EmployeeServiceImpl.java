@@ -7,16 +7,15 @@ import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
 import com.alfred.parkingalfred.form.EmployeeForm;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
+import com.alfred.parkingalfred.repository.EmployeeRepositoryImpl;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.utils.EncodingUtil;
+import com.alfred.parkingalfred.utils.UUIDUtil;
 import com.alfred.parkingalfred.vo.EmployeeVO;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,11 +26,15 @@ public class EmployeeServiceImpl implements EmployeeService {
   private final ParkingLotRepository parkingLotRepository;
 
   private final ApplicationEventPublisher publisher;
+
+ private final EmployeeRepositoryImpl employeeRepositoryImpl;
   public EmployeeServiceImpl(EmployeeRepository employeeRepository,
-      ParkingLotRepository parkingLotRepository,ApplicationEventPublisher publisher) {
+      ParkingLotRepository parkingLotRepository,ApplicationEventPublisher publisher,
+      EmployeeRepositoryImpl employeeRepositroyImpl) {
     this.employeeRepository = employeeRepository;
     this.parkingLotRepository = parkingLotRepository;
     this.publisher=publisher;
+    this.employeeRepositoryImpl =employeeRepositroyImpl;
   }
 
   @Override
@@ -53,16 +56,10 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public List<EmployeeVO> getEmployeesByRoleWithFilterByPageAndSize(Integer page, Integer size,Integer role) {
-    PageRequest pageRequest = PageRequest.of(page - 1, size);
-    Page<Employee> employeePage;
-    if (role==null){
-      employeePage=employeeRepository.findAll(pageRequest);
-    }else {
-      employeePage=employeeRepository.findAllByRole(role,pageRequest);
-    }
-    return EmployeeToEmployeeVOConverter
-        .convert(employeePage.getContent());
+  public List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page, Integer size,EmployeeVO employeeVO) {
+    List<EmployeeVO> employeeVOList = EmployeeToEmployeeVOConverter.convert(
+        employeeRepositoryImpl.getAllByQueryWithPageAndEmployeeVO(page,size,employeeVO));
+    return employeeVOList;
   }
 
   @Override
@@ -77,8 +74,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     BeanUtils.copyProperties(employeeForm, employee);
     Employee employeeEmail = new Employee();
     BeanUtils.copyProperties(employeeForm,employeeEmail);
+    String password = UUIDUtil.generateUUID()
+        .replace("-","").substring(0,8);
+    employeeEmail.setPassword(password);
     publisher.publishEvent(employeeEmail);
-    employee.setPassword(EncodingUtil.encodingByMd5(employeeForm.getPassword()));
+    employee.setPassword(EncodingUtil.encodingByMd5(password));
     Employee employeeResult = employeeRepository.save(employee);
     EmployeeVO employeeVOResult = new EmployeeVO();
     BeanUtils.copyProperties(employeeResult, employeeVOResult);
@@ -86,6 +86,7 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   public int getEmployeeCount() {
+    //ToDo
     return employeeRepository.getEmployeeCount();
   }
 
