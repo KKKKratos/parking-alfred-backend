@@ -60,7 +60,7 @@ public class EmployeeController {
   @GetMapping("/employees")
   public ResultVO getEmployees(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                @RequestParam(value = "size", defaultValue = "10") Integer size,
-                               @RequestParam(value = "role", defaultValue = "1") Integer role) {
+                               @RequestParam(value = "role", required = false) Integer role) {
     List<EmployeeVO> employeeVOList = employeeService.getEmployeesByRoleWithFilterByPageAndSize(page, size,role);
     int totalCount = employeeService.getEmployeeCount();
     Map<String,Object> objectMap = new HashMap<>();

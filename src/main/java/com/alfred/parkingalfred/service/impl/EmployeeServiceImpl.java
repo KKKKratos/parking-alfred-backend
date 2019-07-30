@@ -51,7 +51,12 @@ public class EmployeeServiceImpl implements EmployeeService {
   @Override
   public List<EmployeeVO> getEmployeesByRoleWithFilterByPageAndSize(Integer page, Integer size,Integer role) {
     PageRequest pageRequest = PageRequest.of(page - 1, size);
-    Page<Employee> employeePage = employeeRepository.findAllByRole(role,pageRequest);
+    Page<Employee> employeePage;
+    if (role==null){
+      employeePage=employeeRepository.findAll(pageRequest);
+    }else {
+      employeePage=employeeRepository.findAllByRole(role,pageRequest);
+    }
     return EmployeeToEmployeeVOConverter
         .convert(employeePage.getContent());
   }
