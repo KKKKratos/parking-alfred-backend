@@ -23,6 +23,9 @@ public class EmployeeRepositoryImpl {
     if (!StringUtils.isEmpty(employeeVO.getTelephone())){
       querySql.append(" and e.telephone like CONCAT('%' ,"+employeeVO.getTelephone()+", '%')");
     }
+    if (employeeVO.getRole()!=null){
+      querySql.append(" and e.role like CONCAT('%' ,"+employeeVO.getRole()+", '%')");
+    }
     querySql.append("limit "+((page-1)*size)+","+size);
     Query query = entityManager.createNativeQuery(querySql.toString() , Employee.class);
     List<Employee> list = query.getResultList();

@@ -60,10 +60,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     List<EmployeeVO> employeeVOList = EmployeeToEmployeeVOConverter.convert(
         employeeRepositoryImpl.getAllByQueryWithPageAndEmployeeVO(page,size,employeeVO));
     return employeeVOList;
-      employeePage=employeeRepository.findAll(pageRequest);
-    }else {
-      employeePage=employeeRepository.findAllByRole(role,pageRequest);
-    }
   }
 
   @Override
