@@ -2,6 +2,7 @@ package com.alfred.parkingalfred.service;
 
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.form.ParkingLotForm;
+import com.alfred.parkingalfred.vo.EmployeeVO;
 import java.util.List;
 
 public interface ParkingLotService {
@@ -10,7 +11,9 @@ public interface ParkingLotService {
 
   public ParkingLot createParkingLot(ParkingLotForm parkingLotForm);
 
-  public List<ParkingLot> getAllParkingLotsByPageAndSize(int page,int size);
+  public List<ParkingLot> getAllParkingLotsByPageAndSize(int page, int size);
+
+  public List<ParkingLot> getAllParkingLotsByPageAndSize(int page, int size, EmployeeVO employeeVO);
 
   public int getParkingLotCount();
 }

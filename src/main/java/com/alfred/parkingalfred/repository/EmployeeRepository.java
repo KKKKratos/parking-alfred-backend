@@ -16,4 +16,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query(value = "select count(1) from employee",nativeQuery = true)
     int getEmployeeCount();
+
+    Page<Employee> findAllByRole(Integer role,Pageable pageable);
 }
