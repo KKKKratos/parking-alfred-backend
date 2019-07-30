@@ -24,7 +24,7 @@ public class ParkingLot {
   private Integer occupied;
 
   @ManyToMany(mappedBy = "parkingLots",fetch = FetchType.EAGER,
-          cascade = {CascadeType.REFRESH, CascadeType.REMOVE
+          cascade = {CascadeType.REFRESH
                   , CascadeType.MERGE, CascadeType.PERSIST})
   @JsonIgnore
   private List<Employee> employees;
