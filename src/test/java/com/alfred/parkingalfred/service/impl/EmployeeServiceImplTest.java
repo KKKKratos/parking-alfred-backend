@@ -108,7 +108,7 @@ public class EmployeeServiceImplTest {
 
   @Test
   public void should_return_employeeVOList_when_call_getAllEmployeesByPageAndSize_with_page_and_size() {
-    int page = 1, size = 5;
+    int page = 1, size = 5, role=1;
     List<Employee> employeeList = new ArrayList<Employee>() {{
       add(new Employee());
       add(new Employee());
@@ -117,8 +117,8 @@ public class EmployeeServiceImplTest {
       add(new Employee());
     }};
     PageImpl<Employee> employeePageActual = new PageImpl<>(employeeList);
-    when(employeeRepository.findAll(any(Pageable.class))).thenReturn(employeePageActual);
-    List<EmployeeVO> employeeListResult = employeeService.getAllEmployeesByPageAndSize(page, size);
+    when(employeeRepository.findAllByRole(anyInt(),any(Pageable.class))).thenReturn(employeePageActual);
+    List<EmployeeVO> employeeListResult = employeeService.getEmployeesByRoleWithFilterByPageAndSize(page, size, role);
     Assert.assertEquals(5, employeeListResult.size());
   }
 
