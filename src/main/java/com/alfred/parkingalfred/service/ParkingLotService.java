@@ -13,4 +13,6 @@ public interface ParkingLotService {
   public List<ParkingLot> getAllParkingLotsByPageAndSize(int page,int size);
 
   public int getParkingLotCount();
+
+  public ParkingLot updateParkingLotById(Long id, ParkingLot parkingLot);
 }
