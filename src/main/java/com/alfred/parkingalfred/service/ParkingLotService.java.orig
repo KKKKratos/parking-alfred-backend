@@ -11,7 +11,11 @@ public interface ParkingLotService {
 
   ParkingLot createParkingLot(ParkingLotForm parkingLotForm);
 
+<<<<<<< HEAD
+  public List<ParkingLot> getAllParkingLotsByPageAndSize(int page, int size);
+=======
   List<ParkingLot> getAllParkingLotsWithFilterByPageAndSize(int page, int size, String name);
+>>>>>>> f46c3131a43accd478075d52a4bc65a796456a7a
 
   int getParkingLotCount();
 
