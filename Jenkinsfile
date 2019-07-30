@@ -25,5 +25,10 @@ nohup java -jar ./build/libs/parking-alfred-0.1.jar > out.log &'''
         sh 'cp ./build/libs/parking-alfred-0.1.jar /root/release'
       }
     }
+    stage('Coverage report') {
+      steps {
+        cobertura(coberturaReportFile: './build/reports/cobertura/coverage.xml/')
+      }
+    }
   }
 }
