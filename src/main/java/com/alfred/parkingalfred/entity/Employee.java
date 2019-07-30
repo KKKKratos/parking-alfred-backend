@@ -47,7 +47,7 @@ public class Employee {
   private List<Order> orders;
 
   @ManyToMany(fetch = FetchType.EAGER,
-      cascade = {CascadeType.REFRESH, CascadeType.REMOVE
+      cascade = {CascadeType.REFRESH
           , CascadeType.MERGE, CascadeType.PERSIST})
   @JoinTable(name = "employee_parkingLot",
       joinColumns = {
