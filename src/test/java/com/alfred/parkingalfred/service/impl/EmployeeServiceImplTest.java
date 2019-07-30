@@ -28,6 +28,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -35,21 +40,24 @@ import org.springframework.data.domain.Pageable;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 public class EmployeeServiceImplTest {
 
   private EmployeeRepository employeeRepository;
 
   private ParkingLotRepository parkingLotRepository;
+
   private EmployeeService employeeService;
 
   private ObjectMapper objectMapper;
 
+  @Autowired
+  private ApplicationEventPublisher publisher;
   @Before
   public void setUp() {
     employeeRepository = mock(EmployeeRepository.class);
     parkingLotRepository = mock(ParkingLotRepository.class);
-    employeeService = new EmployeeServiceImpl(employeeRepository, parkingLotRepository);
+    publisher = mock(ApplicationEventPublisher.class);
+    employeeService = new EmployeeServiceImpl(employeeRepository, parkingLotRepository,publisher);
     objectMapper = new ObjectMapper();
   }
 
@@ -119,15 +127,13 @@ public class EmployeeServiceImplTest {
     EmployeeForm employeeForm = new EmployeeForm();
     employeeForm.setName("test");
     employeeForm.setStatus(RoleEnum.PARKING_BOY.getCode());
-    employeeForm.setMail("aqqsda@qq.com");
+    employeeForm.setMail("764974614@qq.com");
     employeeForm.setPassword("123456");
-
     Employee employeeExpected = new Employee();
     employeeExpected.setId(1L);
     employeeExpected.setName("test");
     employeeExpected.setStatus(RoleEnum.PARKING_BOY.getCode());
-    employeeExpected.setMail("aqqsda@qq.com");
-
+    employeeExpected.setMail("764974614@qq.com");
     when(employeeRepository.save(any(Employee.class))).thenReturn(employeeExpected);
     EmployeeVO employeeVOActual = employeeService.createEmployee(employeeForm);
     Assert.assertEquals(employeeExpected.getId(),employeeVOActual.getId());

@@ -13,6 +13,8 @@ import com.alfred.parkingalfred.utils.EncodingUtil;
 import com.alfred.parkingalfred.vo.EmployeeVO;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -24,10 +26,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
   private final ParkingLotRepository parkingLotRepository;
 
+  private final ApplicationEventPublisher publisher;
   public EmployeeServiceImpl(EmployeeRepository employeeRepository,
-      ParkingLotRepository parkingLotRepository) {
+      ParkingLotRepository parkingLotRepository,ApplicationEventPublisher publisher) {
     this.employeeRepository = employeeRepository;
     this.parkingLotRepository = parkingLotRepository;
+    this.publisher=publisher;
   }
 
   @Override
@@ -71,12 +75,10 @@ public class EmployeeServiceImpl implements EmployeeService {
   public EmployeeVO createEmployee(EmployeeForm employeeForm) {
     Employee employee = new Employee();
     BeanUtils.copyProperties(employeeForm, employee);
-//    String password = UUIDUtil.generateUUID()
-//        .replace("-", "").substring(0, 8);
-    //TODO delete this line after test
-   //    System.out.println("password:"+password);
-    String password = "123456";
-    employee.setPassword(EncodingUtil.encodingByMd5(password));
+    Employee employeeEmail = new Employee();
+    BeanUtils.copyProperties(employeeForm,employeeEmail);
+    publisher.publishEvent(employeeEmail);
+    employee.setPassword(EncodingUtil.encodingByMd5(employeeForm.getPassword()));
     Employee employeeResult = employeeRepository.save(employee);
     EmployeeVO employeeVOResult = new EmployeeVO();
     BeanUtils.copyProperties(employeeResult, employeeVOResult);
