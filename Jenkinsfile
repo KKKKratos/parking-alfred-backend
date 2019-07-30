@@ -13,7 +13,7 @@ chmod 700 ./gradlew
     stage('Run') {
       steps {
         sh '''PID=$(jps | grep jar | cut -d \' \' -f 1)
-if [ ! -n $PID ]; then
+if [ -n $PID ]; then
   kill -9 $PID
 fi'''
         sh '''JENKINS_NODE_COOKIE=dontKillMe
