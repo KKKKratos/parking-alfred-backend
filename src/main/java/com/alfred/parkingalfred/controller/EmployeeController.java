@@ -11,7 +11,7 @@ import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.service.ParkingLotService;
 import com.alfred.parkingalfred.utils.JwtUtil;
 import com.alfred.parkingalfred.vo.EmployeeVO;
-import com.alfred.parkingalfred.vo.ParkingLotVo;
+import com.alfred.parkingalfred.vo.ParkingLotVO;
 import com.alfred.parkingalfred.vo.ResultVO;
 import com.alfred.parkingalfred.utils.ResultVOUtil;
 import java.util.HashMap;
@@ -88,10 +88,10 @@ public class EmployeeController {
   public ResultVO updateEmployeeParkingLots(@PathVariable Long employeeId, @RequestBody List<Long> parkingLotIdList) {
     Employee employee = employeeService.updateEmployeeParkingLots(employeeId, parkingLotIdList);
     EmployeeVO employeeVO = EmployeeToEmployeeVOConverter.convert(employee);
-    List<ParkingLotVo> parkingLotVos = employee.getParkingLots().stream()
+    List<ParkingLotVO> parkingLotVOS = employee.getParkingLots().stream()
             .map(ParkingLotToParkingLotVOConverter::convert)
             .collect(Collectors.toList());
-    employeeVO.setParkingLotVos(parkingLotVos);
+    employeeVO.setParkingLotVOS(parkingLotVOS);
     return ResultVOUtil.success(employeeVO);
   }
 }
