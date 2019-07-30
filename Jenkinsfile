@@ -27,7 +27,7 @@ nohup java -jar ./build/libs/parking-alfred-0.1.jar > out.log &'''
     }
     stage('Coverage report') {
       steps {
-        cobertura(coberturaReportFile: './build/reports/cobertura/')
+        cobertura(coberturaReportFile: '/var/lib/jenkins/workspace/arking-alfred-backend-dev_master/build/reports/cobertura/coverage.xml')
       }
     }
   }
