@@ -1,7 +1,6 @@
 package com.alfred.parkingalfred.repository;
 
 import com.alfred.parkingalfred.entity.Employee;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -44,5 +42,4 @@ public  class EmployeeRepositoryTest {
     Page<Employee> page = employeeRepository.findAll(PageRequest.of(0,3));
     Assert.assertEquals(3,page.getContent().size());
   }
-
 }

@@ -56,6 +56,6 @@ public class Employee {
       inverseJoinColumns = {
           @JoinColumn(name = "pid")
       })
-  @JsonIgnore
+
   private List<ParkingLot> parkingLots;
 }

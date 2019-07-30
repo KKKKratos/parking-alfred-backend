@@ -6,6 +6,7 @@ import com.alfred.parkingalfred.exception.SecKillOrderException;
 import com.alfred.parkingalfred.utils.ResultVOUtil;
 import com.alfred.parkingalfred.vo.ResultVO;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,5 +30,10 @@ public class RuntimeExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ResultVO handleIncorrectParameterException(IncorrectParameterException e){
     return ResultVOUtil.error(e.getCode(),e.getMessage());
+  }
+  @ExceptionHandler(value = MailException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResultVO handleMailException(MailException e){
+    return ResultVOUtil.error(HttpStatus.BAD_REQUEST.value(),e.getMessage());
   }
 }
