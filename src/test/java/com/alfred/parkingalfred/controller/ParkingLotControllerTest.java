@@ -1,14 +1,15 @@
 package com.alfred.parkingalfred.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.alfred.parkingalfred.converter.ParkingLotToParkingLotVOConverter;
+import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.dto.CreateOrderDto;
 import com.alfred.parkingalfred.entity.Order;
+import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.OrderStatusEnum;
 import com.alfred.parkingalfred.form.ParkingLotForm;
@@ -71,9 +72,50 @@ public class ParkingLotControllerTest {
                 add(new ParkingLot());
             }
         };
-        when(parkingLotService.getAllParkingLotsByPageAndSize(page, size)).thenReturn(parkingLotList);
+    when(parkingLotService.getAllParkingLotsWithFilterByPageAndSize(page,size, null)).thenReturn(parkingLotList);
         when(parkingLotService.getParkingLotCount()).thenReturn(2);
         mockMvc.perform(get("/parking-lots"))
                 .andExpect(status().isOk());
+  }
+
+  @Test
+  public void should_return_parkingLots_when_search_by_name() throws Exception {
+      String name = "name";
+      ParkingLot parkingLot = new ParkingLot();
+      parkingLot.setName(name);
+
+      List<ParkingLot> expectParkingLots = new ArrayList<ParkingLot>() {{
+          add(parkingLot);
+      }};
+      when(parkingLotService.getAllParkingLotsWithFilterByPageAndSize(anyInt(), anyInt(), eq(name))).thenReturn(expectParkingLots);
+
+      mockMvc.perform(get("/parking-lots")
+              .param("name", name)
+              .accept(MediaType.APPLICATION_JSON))
+              .andExpect(status().isOk());
+  }
+
+  public void should_return_updated_parkingLot_when_update_by_id() throws Exception {
+    Long id = 1L;
+    ParkingLot parkingLot = new ParkingLot();
+    parkingLot.setId(id);
+
+    ParkingLot parkingLotExpected = new ParkingLot();
+    parkingLotExpected.setId(id);
+    parkingLotExpected.setStatus(2);
+
+    when(parkingLotService.updateParkingLotById((long) 1, parkingLot))
+            .thenReturn(parkingLotExpected);
+
+    Employee employee = new Employee();
+    employee.setId(id);
+    String token = JwtUtil.generateToken(employee);
+
+    mockMvc.perform(put("/parking-lots/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(parkingLot))
+            .header("Authorization", "Bearer " + token)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
     }
 }

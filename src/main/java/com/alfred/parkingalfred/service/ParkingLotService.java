@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface ParkingLotService {
 
-  public List<ParkingLot> getParkingLotsByParkingBoyId(Long parkingBoyId);
+  List<ParkingLot> getParkingLotsByParkingBoyId(Long parkingBoyId);
 
-  public ParkingLot createParkingLot(ParkingLotForm parkingLotForm);
+  ParkingLot createParkingLot(ParkingLotForm parkingLotForm);
 
-  public List<ParkingLot> getAllParkingLotsByPageAndSize(int page, int size);
+  List<ParkingLot> getAllParkingLotsWithFilterByPageAndSize(int page, int size, String name);
 
-  public int getParkingLotCount();
+  int getParkingLotCount();
+
+  ParkingLot updateParkingLotById(Long id, ParkingLot parkingLot);
 }

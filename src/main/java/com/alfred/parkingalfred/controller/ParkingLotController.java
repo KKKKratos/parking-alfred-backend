@@ -13,16 +13,13 @@ import com.alfred.parkingalfred.vo.ParkingLotVO;
 import com.alfred.parkingalfred.vo.ResultVO;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ParkingLotController {
@@ -38,9 +35,9 @@ public class ParkingLotController {
     return ResultVOUtil.success(parkingLot);
   }
   @GetMapping("/parking-lots")
-  public ResultVO getAllParkingLots(@RequestParam(name = "page",defaultValue = "1")Integer page
-      ,@RequestParam(name = "size",defaultValue = "10")Integer size){
-    List<ParkingLot> parkingLotList = parkingLotService.getAllParkingLotsByPageAndSize(page,size);
+  public ResultVO getAllParkingLots(
+          @RequestParam(name = "page",defaultValue = "1")Integer page,
+          @RequestParam(name = "size",defaultValue = "10")Integer size,
     List<ParkingLotVO> parkingLotVOS =parkingLotList.stream()
             .map(ParkingLotToParkingLotVOConverter::convert)
             .collect(Collectors.toList());
@@ -60,6 +57,11 @@ public class ParkingLotController {
     result.put("parkingLots", parkingLotVOS);
     result.put("totalCount",totoalCount);
     return ResultVOUtil.success(result);
+  }
+  @PutMapping(value = "/parking-lots/{id}")
+  public ResultVO updateParkingLotById(@PathVariable Long id, @RequestBody ParkingLot parkingLot) {
+    ParkingLot parkingLotUpdated = parkingLotService.updateParkingLotById(id, parkingLot);
+    return ResultVOUtil.success(parkingLotUpdated);
   }
 
 }

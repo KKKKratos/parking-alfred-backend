@@ -135,7 +135,7 @@ public class OrderControllerTest {
         orderExpected.setId(id);
         orderExpected.setStatus(2);
 
-        when(orderService.updateOrderStatusById((long) 1, order))
+        when(orderService.updateOrderById((long) 1, order))
                 .thenReturn(orderExpected);
 
         Employee employee = new Employee();
