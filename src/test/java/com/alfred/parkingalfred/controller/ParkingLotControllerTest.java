@@ -1,5 +1,6 @@
 package com.alfred.parkingalfred.controller;
 
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,13 +62,29 @@ public class ParkingLotControllerTest {
         add(new ParkingLot());
       }
     };
-    when(parkingLotService.getAllParkingLotsByPageAndSize(page,size)).thenReturn(parkingLotList);
+    when(parkingLotService.getAllParkingLotsWithFilterByPageAndSize(page,size, null)).thenReturn(parkingLotList);
     when(parkingLotService.getParkingLotCount()).thenReturn(2);
     mockMvc.perform(get("/parking-lots"))
         .andExpect(status().isOk());
   }
 
   @Test
+  public void should_return_parkingLots_when_search_by_name() throws Exception {
+      String name = "name";
+      ParkingLot parkingLot = new ParkingLot();
+      parkingLot.setName(name);
+
+      List<ParkingLot> expectParkingLots = new ArrayList<ParkingLot>() {{
+          add(parkingLot);
+      }};
+      when(parkingLotService.getAllParkingLotsWithFilterByPageAndSize(anyInt(), anyInt(), eq(name))).thenReturn(expectParkingLots);
+
+      mockMvc.perform(get("/parking-lots")
+              .param("name", name)
+              .accept(MediaType.APPLICATION_JSON))
+              .andExpect(status().isOk());
+  }
+
   public void should_return_updated_parkingLot_when_update_by_id() throws Exception {
     Long id = 1L;
     ParkingLot parkingLot = new ParkingLot();
