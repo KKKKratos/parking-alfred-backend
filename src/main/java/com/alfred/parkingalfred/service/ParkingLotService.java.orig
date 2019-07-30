@@ -1,0 +1,23 @@
+package com.alfred.parkingalfred.service;
+
+import com.alfred.parkingalfred.entity.ParkingLot;
+import com.alfred.parkingalfred.form.ParkingLotForm;
+
+import java.util.List;
+
+public interface ParkingLotService {
+
+  List<ParkingLot> getParkingLotsByParkingBoyId(Long parkingBoyId);
+
+  ParkingLot createParkingLot(ParkingLotForm parkingLotForm);
+
+<<<<<<< HEAD
+  public List<ParkingLot> getAllParkingLotsByPageAndSize(int page, int size);
+=======
+  List<ParkingLot> getAllParkingLotsWithFilterByPageAndSize(int page, int size, String name);
+>>>>>>> f46c3131a43accd478075d52a4bc65a796456a7a
+
+  int getParkingLotCount();
+
+  ParkingLot updateParkingLotById(Long id, ParkingLot parkingLot);
+}

@@ -4,22 +4,15 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.alfred.parkingalfred.converter.ParkingLotToParkingLotVOConverter;
 import com.alfred.parkingalfred.entity.Employee;
-import com.alfred.parkingalfred.dto.CreateOrderDto;
-import com.alfred.parkingalfred.entity.Order;
 import com.alfred.parkingalfred.entity.ParkingLot;
-import com.alfred.parkingalfred.entity.ParkingLot;
-import com.alfred.parkingalfred.enums.OrderStatusEnum;
 import com.alfred.parkingalfred.form.ParkingLotForm;
 import com.alfred.parkingalfred.service.ParkingLotService;
-import com.alfred.parkingalfred.vo.ParkingLotVO;
+import com.alfred.parkingalfred.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 

@@ -38,15 +38,17 @@ public class ParkingLotController {
   public ResultVO getAllParkingLots(
           @RequestParam(name = "page",defaultValue = "1")Integer page,
           @RequestParam(name = "size",defaultValue = "10")Integer size,
+          @RequestParam(name = "name", required = false) String name){
+    List<ParkingLot> parkingLotList = parkingLotService.getAllParkingLotsWithFilterByPageAndSize(page,size, name);;
     List<ParkingLotVO> parkingLotVOS =parkingLotList.stream()
             .map(ParkingLotToParkingLotVOConverter::convert)
             .collect(Collectors.toList());
     for(int i=0;i<parkingLotList.size();i++){
       if ( parkingLotList.get(i).getEmployees()!=null){
-      List<EmployeeVO> employeeVOList = parkingLotList.get(i).getEmployees().stream()
-              .map(EmployeeToEmployeeVOConverter::convert)
-              .collect(Collectors.toList());
-      parkingLotVOS.get(i).setEmployeeVOS(employeeVOList);
+        List<EmployeeVO> employeeVOList = parkingLotList.get(i).getEmployees().stream()
+                .map(EmployeeToEmployeeVOConverter::convert)
+                .collect(Collectors.toList());
+        parkingLotVOS.get(i).setEmployeeVOS(employeeVOList);
       }else {
         List<EmployeeVO> employeeVOList =null;
         parkingLotVOS.get(i).setEmployeeVOS(employeeVOList);
@@ -58,6 +60,7 @@ public class ParkingLotController {
     result.put("totalCount",totoalCount);
     return ResultVOUtil.success(result);
   }
+
   @PutMapping(value = "/parking-lots/{id}")
   public ResultVO updateParkingLotById(@PathVariable Long id, @RequestBody ParkingLot parkingLot) {
     ParkingLot parkingLotUpdated = parkingLotService.updateParkingLotById(id, parkingLot);
