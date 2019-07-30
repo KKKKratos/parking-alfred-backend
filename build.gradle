@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.1.6.RELEASE'
     id 'java'
+    id 'net.saliman.cobertura' version '2.6.1'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -34,3 +35,19 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '2.1.3.RELEASE'
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
 }
+
+cobertura {
+    coverageFormats = ['html', 'xml']
+    coverageEncoding = 'UTF-8'
+    coverageExcludes = ['.*Application.*']
+    coverageIgnoreMethodAnnotations = []
+    coverageCheckBranchRate = 90
+    coverageCheckLineRate = 90
+    coverageCheckPackageBranchRate = 90
+    coverageCheckPackageLineRate = 90
+    coverageCheckTotalBranchRate = 90
+    coverageCheckTotalLineRate = 90
+    coverageIgnoreTrivial = true
+    coverageCheckHaltOnFailure = true
+}
+check.dependsOn 'coberturaCheck'
