@@ -39,7 +39,7 @@ public class OrderController {
 
 
     @PutMapping(value = "/orders/{id}")
-    public ResultVO updateOrderStatusById(@PathVariable Long id, @RequestBody Order order) {
-        return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.updateOrderStatusById(id, order));
+    public ResultVO updateOrderById(@PathVariable Long id, @RequestBody Order order) {
+        return new ResultVO(ResultEnum.SUCCESS.getStatus(), null, orderService.updateOrderById(id, order));
     }
 }

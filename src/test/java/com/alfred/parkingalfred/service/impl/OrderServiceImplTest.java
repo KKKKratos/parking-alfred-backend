@@ -128,7 +128,7 @@ public class OrderServiceImplTest {
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
         when(orderRepository.save(any())).thenReturn(orderExpected);
         when(redisLock.lock(any(String.class), any(String.class))).thenReturn(true);
-        Order actualOrder = orderService.updateOrderStatusById(id, orderExpected);
+        Order actualOrder = orderService.updateOrderById(id, orderExpected);
         assertEquals(objectMapper.writeValueAsString(orderExpected), objectMapper.writeValueAsString(actualOrder));
     }
 

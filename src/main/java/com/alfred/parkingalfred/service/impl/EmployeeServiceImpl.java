@@ -10,7 +10,6 @@ import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.utils.EncodingUtil;
-import com.alfred.parkingalfred.utils.UUIDUtil;
 import com.alfred.parkingalfred.vo.EmployeeVO;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
@@ -67,8 +66,11 @@ public class EmployeeServiceImpl implements EmployeeService {
   public EmployeeVO createEmployee(EmployeeForm employeeForm) {
     Employee employee = new Employee();
     BeanUtils.copyProperties(employeeForm, employee);
-    String password = UUIDUtil.generateUUID()
-        .replace("-", "").substring(0, 8);
+//    String password = UUIDUtil.generateUUID()
+//        .replace("-", "").substring(0, 8);
+    //TODO delete this line after test
+   //    System.out.println("password:"+password);
+    String password = "123456";
     employee.setPassword(EncodingUtil.encodingByMd5(password));
     Employee employeeResult = employeeRepository.save(employee);
     EmployeeVO employeeVOResult = new EmployeeVO();

@@ -15,7 +15,6 @@ import com.alfred.parkingalfred.utils.UUIDUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public Order updateOrderStatusById(Long id, Order order) {
+  public Order updateOrderById(Long id, Order order) {
     //lock
     long time = System.currentTimeMillis() + TIMEOUT;
     if (!redisLock.lock(id.toString(), String.valueOf(time))) {
