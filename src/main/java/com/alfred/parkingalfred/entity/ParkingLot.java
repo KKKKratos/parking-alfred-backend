@@ -28,11 +28,20 @@ public class ParkingLot {
                   , CascadeType.MERGE, CascadeType.PERSIST})
   @JsonIgnore
   private List<Employee> employees;
+  private Integer status;
 
   public ParkingLot(Long id, String name, Integer capacity, Integer occupied) {
     this.id = id;
     this.name = name;
     this.capacity = capacity;
     this.occupied = occupied;
+  }
+
+  public void setStatus(Integer status) {
+    this.status = status;
+  }
+
+  public Integer getStatus() {
+    return status;
   }
 }
