@@ -14,8 +14,6 @@ public interface ParkingLotService {
 
   List<ParkingLot> getAllParkingLotsWithFilterByPageAndSize(int page, int size, String name);
 
-  public List<ParkingLot> getAllParkingLotsByPageAndSize(int page, int size, EmployeeVO employeeVO);
-
   int getParkingLotCount();
 
   ParkingLot updateParkingLotById(Long id, ParkingLot parkingLot);

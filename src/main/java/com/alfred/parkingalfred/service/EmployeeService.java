@@ -12,7 +12,7 @@ public interface EmployeeService {
 
     boolean doesEmployeeHasNotFullParkingLots(Long employeeId);
 
-    List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page, Integer size);
+    List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page, Integer size,EmployeeVO employeeVO);
 
     Employee getEmployeeById(Long id);
 

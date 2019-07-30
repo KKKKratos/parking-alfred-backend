@@ -1,6 +1,7 @@
 package com.alfred.parkingalfred.repository;
 
 import com.alfred.parkingalfred.entity.Employee;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     int getEmployeeCount();
 
     Page<Employee> findAllByRole(Integer role,Pageable pageable);
+
 }

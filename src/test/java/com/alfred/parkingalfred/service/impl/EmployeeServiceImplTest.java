@@ -15,6 +15,7 @@ import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.form.EmployeeForm;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
+import com.alfred.parkingalfred.repository.EmployeeRepositoryImpl;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.utils.EncodingUtil;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +42,7 @@ import org.springframework.data.domain.Pageable;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 public class EmployeeServiceImplTest {
 
   private EmployeeRepository employeeRepository;
@@ -50,14 +53,18 @@ public class EmployeeServiceImplTest {
 
   private ObjectMapper objectMapper;
 
+  private EmployeeRepositoryImpl employeeRepositoryImpl;
   @Autowired
   private ApplicationEventPublisher publisher;
+
   @Before
   public void setUp() {
     employeeRepository = mock(EmployeeRepository.class);
     parkingLotRepository = mock(ParkingLotRepository.class);
     publisher = mock(ApplicationEventPublisher.class);
-    employeeService = new EmployeeServiceImpl(employeeRepository, parkingLotRepository,publisher);
+    employeeRepositoryImpl = mock(EmployeeRepositoryImpl.class);
+    employeeService = new EmployeeServiceImpl(employeeRepository, parkingLotRepository,
+        publisher, employeeRepositoryImpl);
     objectMapper = new ObjectMapper();
   }
 
@@ -108,22 +115,25 @@ public class EmployeeServiceImplTest {
 
   @Test
   public void should_return_employeeVOList_when_call_getAllEmployeesByPageAndSize_with_page_and_size() {
-    int page = 1, size = 5;
-    List<Employee> employeeList = new ArrayList<Employee>() {{
-      add(new Employee());
-      add(new Employee());
-      add(new Employee());
-      add(new Employee());
-      add(new Employee());
-    }};
-    PageImpl<Employee> employeePageActual = new PageImpl<>(employeeList);
-    when(employeeRepository.findAll(any(Pageable.class))).thenReturn(employeePageActual);
-    List<EmployeeVO> employeeListResult = employeeService.getAllEmployeesByPageAndSize(page, size);
-    Assert.assertEquals(5, employeeListResult.size());
+    List<Employee> employeeList = new ArrayList<Employee>();
+    for (int i = 0; i < 10; i++) {
+      Employee employee = new Employee();
+      employee.setName("张" + i);
+      employee.setTelephone("13" + i);
+      employeeList.add(employee);
+    }
+    EmployeeVO employeeVO = new EmployeeVO();
+    employeeVO.setName("张");
+    employeeVO.setTelephone("13");
+    when(employeeRepositoryImpl.getAllByQueryWithPageAndEmployeeVO(1,10,employeeVO))
+        .thenReturn(employeeList);
+    List<EmployeeVO> employeeListResult = employeeService
+        .getAllEmployeesByPageAndSize(1, 10, employeeVO);
+    Assert.assertEquals(10, employeeListResult.size());
   }
 
   @Test
-  public void should_return_employee_when_call_createEmployee_with_true_param(){
+  public void should_return_employee_when_call_createEmployee_with_true_param() {
     EmployeeForm employeeForm = new EmployeeForm();
     employeeForm.setName("test");
     employeeForm.setStatus(RoleEnum.PARKING_BOY.getCode());
@@ -136,7 +146,7 @@ public class EmployeeServiceImplTest {
     employeeExpected.setMail("764974614@qq.com");
     when(employeeRepository.save(any(Employee.class))).thenReturn(employeeExpected);
     EmployeeVO employeeVOActual = employeeService.createEmployee(employeeForm);
-    Assert.assertEquals(employeeExpected.getId(),employeeVOActual.getId());
+    Assert.assertEquals(employeeExpected.getId(), employeeVOActual.getId());
   }
 
   @Test
@@ -162,6 +172,6 @@ public class EmployeeServiceImplTest {
     Employee actualEmployee = employeeService.updateEmployeeParkingLots(id, parkingLotIdList);
 
     assertEquals(objectMapper.writeValueAsString(afterUpdateEmployee),
-            objectMapper.writeValueAsString(actualEmployee));
+        objectMapper.writeValueAsString(actualEmployee));
   }
 }
