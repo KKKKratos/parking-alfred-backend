@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
@@ -16,4 +18,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query(value = "select count(1) from employee",nativeQuery = true)
     int getEmployeeCount();
+
+    Page<Employee> findAllByRole(Integer role, Pageable pageable);
 }

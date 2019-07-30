@@ -141,9 +141,9 @@ public class EmployeeControllerTest {
         String token = JwtUtil.generateToken(employee);
         List<EmployeeVO> employeeVOList = new ArrayList<>();
         employeeVOList.add(new EmployeeVO());
-        when(employeeService.getAllEmployeesByPageAndSize(1, 3)).thenReturn(employeeVOList);
+        when(employeeService.getEmployeesByRoleWithFilterByPageAndSize(1, 3,1)).thenReturn(employeeVOList);
         when(employeeService.getEmployeeCount()).thenReturn(1);
-        mockMvc.perform(get("/employees", 1, 3)
+        mockMvc.perform(get("/employees", 1, 3, 1)
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }

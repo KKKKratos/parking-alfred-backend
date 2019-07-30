@@ -39,7 +39,7 @@ public class ParkingLotController {
           @RequestParam(name = "page",defaultValue = "1")Integer page,
           @RequestParam(name = "size",defaultValue = "10")Integer size,
           @RequestParam(name = "name", required = false) String name){
-    List<ParkingLot> parkingLotList = parkingLotService.getAllParkingLotsWithFilterByPageAndSize(page,size, name);;
+    List<ParkingLot> parkingLotList = parkingLotService.getAllParkingLotsWithFilterByPageAndSize(page,size, name);
     List<ParkingLotVO> parkingLotVOS =parkingLotList.stream()
             .map(ParkingLotToParkingLotVOConverter::convert)
             .collect(Collectors.toList());
