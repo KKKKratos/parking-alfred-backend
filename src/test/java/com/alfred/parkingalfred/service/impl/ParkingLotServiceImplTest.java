@@ -20,6 +20,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+
 public  class ParkingLotServiceImplTest {
 
   private ParkingLotRepository parkingLotRepository;
@@ -43,7 +48,7 @@ public  class ParkingLotServiceImplTest {
     employee.setParkingLots(parkingLots);
     ReflectionTestUtils.setField(parkingLotServiceImpl,ParkingLotServiceImpl.class
         ,"employeeRepository",employeeRepository,EmployeeRepository.class);
-    Mockito.when((
+    when((
         employeeRepository.findById(Mockito.anyLong())
     )).thenReturn(java.util.Optional.of(employee));
     List<ParkingLot>parkingLotsResult = parkingLotServiceImpl.getParkingLotsByParkingBoyId((long)1);
@@ -54,7 +59,7 @@ public  class ParkingLotServiceImplTest {
     ReflectionTestUtils.setField(parkingLotServiceImpl,ParkingLotServiceImpl.class
         ,"employeeRepository",employeeRepository,EmployeeRepository.class);
     Optional<Employee> empty = Optional.empty();
-    Mockito.when(
+    when(
         employeeRepository.findById(Mockito.anyLong()
     )).thenReturn(empty);
       List<ParkingLot>parkingLotsResult = parkingLotServiceImpl.getParkingLotsByParkingBoyId(1L);
@@ -69,8 +74,8 @@ public  class ParkingLotServiceImplTest {
     ParkingLot parkingLotExpected = new ParkingLot();
     BeanUtils.copyProperties(parkingLotForm,parkingLotExpected);
     parkingLotExpected.setId(1L);
-    Mockito.when(
-        parkingLotRepository.save(Mockito.any(ParkingLot.class))
+    when(
+        parkingLotRepository.save(any(ParkingLot.class))
     ).thenReturn(parkingLotExpected);
     ReflectionTestUtils.setField(parkingLotServiceImpl,ParkingLotServiceImpl.class
         ,"parkingLotRepository",parkingLotRepository,ParkingLotRepository.class);
@@ -88,11 +93,27 @@ public  class ParkingLotServiceImplTest {
         add(new ParkingLot());
       }
     };
-    PageImpl parkingLotPage = new PageImpl(parkingLotList);
-    Mockito.when(
-        parkingLotRepository.findAll(Mockito.any(PageRequest.class))
+    PageImpl<ParkingLot>  parkingLotPage = new PageImpl<>(parkingLotList);
+    when(
+        parkingLotRepository.findAllByNameLike(anyString(), any(PageRequest.class))
     ).thenReturn(parkingLotPage);
-    Page<ParkingLot> parkingLotPageResult = parkingLotRepository.findAll(pageRequest);
+    Page<ParkingLot> parkingLotPageResult = parkingLotRepository.findAllByNameLike("", pageRequest);
     Assert.assertEquals(3,parkingLotPageResult.getContent().size());
+  }
+
+  @Test
+  public void should_return_parkingLots_when_search_by_name() {
+    String name = "name";
+    ParkingLot parkingLot = new ParkingLot();
+    parkingLot.setName(name);
+
+    List<ParkingLot> expectParkingLots = new ArrayList<ParkingLot>() {{
+      add(parkingLot);
+    }};
+    PageImpl<ParkingLot> parkingLotPage = new PageImpl<>(expectParkingLots);
+    when(parkingLotRepository.findAllByNameLike(anyString(), any(PageRequest.class))).thenReturn(parkingLotPage);
+    List<ParkingLot> actualParkingLots = parkingLotServiceImpl.getAllParkingLotsWithFilterByPageAndSize(1, 1, name);
+
+    assertIterableEquals(expectParkingLots, actualParkingLots);
   }
 }
