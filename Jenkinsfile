@@ -28,7 +28,7 @@ nohup java -jar ./build/libs/parking-alfred-0.1.jar > out.log &'''
     stage('Coverage report') {
       steps {
         sh './gradlew jacocoTestReport'
-        jacoco(execPattern: '**/jacoco.exec', classPattern: '**/classes', sourcePattern: 'src/main/java')
+        jacoco(execPattern: '**/**.exec', classPattern: '**/classes', sourcePattern: '**/src/main/java', exclusionPattern: '**/**Test**.class')
       }
     }
   }
