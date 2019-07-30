@@ -1,11 +1,14 @@
 package com.alfred.parkingalfred.vo;
 
+import com.alfred.parkingalfred.entity.Employee;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
-public class ParkingLotVo {
+public class ParkingLotVO {
 
     private Long id;
 
@@ -14,4 +17,6 @@ public class ParkingLotVo {
     private Integer capacity;
 
     private Integer occupied;
+
+    private List<EmployeeVO> employeeVOS;
 }
