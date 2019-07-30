@@ -9,7 +9,6 @@ import com.alfred.parkingalfred.utils.ResultVOUtil;
 import com.alfred.parkingalfred.vo.ResultVO;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -33,9 +32,11 @@ public class ParkingLotController {
     return ResultVOUtil.success(parkingLot);
   }
   @GetMapping("/parking-lots")
-  public ResultVO getAllParkingLots(@RequestParam(name = "page",defaultValue = "1")Integer page
-      ,@RequestParam(name = "size",defaultValue = "10")Integer size){
-    List<ParkingLot> parkingLotList = parkingLotService.getAllParkingLotsByPageAndSize(page,size);
+  public ResultVO getAllParkingLots(
+          @RequestParam(name = "page",defaultValue = "1")Integer page,
+          @RequestParam(name = "size",defaultValue = "10")Integer size,
+          @RequestParam(name = "name", required = false) String name){
+    List<ParkingLot> parkingLotList = parkingLotService.getAllParkingLotsWithFilterByPageAndSize(page,size, name);
     int totalCount = parkingLotService.getParkingLotCount();
     HashMap<String, Object> reuslt = new HashMap<>();
     reuslt.put("parkingLots",parkingLotList);

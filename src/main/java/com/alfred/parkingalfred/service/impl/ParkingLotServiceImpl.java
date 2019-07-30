@@ -9,6 +9,8 @@ import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.ParkingLotService;
 import java.util.List;
+
+import io.netty.util.internal.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,9 +44,12 @@ public class ParkingLotServiceImpl implements ParkingLotService {
   }
 
   @Override
-  public List<ParkingLot> getAllParkingLotsByPageAndSize(int page,int size) {
+  public List<ParkingLot> getAllParkingLotsWithFilterByPageAndSize(int page, int size, String name) {
     PageRequest pageRequest = PageRequest.of(page-1,size);
-    Page<ParkingLot> parkingLotPage = parkingLotRepository.findAll(pageRequest);
+    if (StringUtil.isNullOrEmpty(name)) {
+      name = StringUtil.EMPTY_STRING;
+    }
+    Page<ParkingLot> parkingLotPage = parkingLotRepository.findAllByNameLike("%" + name + "%", pageRequest);
     return parkingLotPage.getContent();
   }
 
