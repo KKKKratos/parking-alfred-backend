@@ -2,13 +2,8 @@ package com.alfred.parkingalfred.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,9 +23,9 @@ public class ParkingLot {
 
   private Integer occupied;
 
-  private Integer status;
-
-  @ManyToMany(mappedBy = "parkingLots")
+  @ManyToMany(mappedBy = "parkingLots",fetch = FetchType.EAGER,
+          cascade = {CascadeType.REFRESH, CascadeType.REMOVE
+                  , CascadeType.MERGE, CascadeType.PERSIST})
   @JsonIgnore
   private List<Employee> employees;
 

@@ -22,5 +22,5 @@ public class EmployeeVO implements Serializable {
 
   private Integer role;
 
-  private List<ParkingLotVo> parkingLotVos;
+  private List<ParkingLotVO> parkingLotVOS;
 }
