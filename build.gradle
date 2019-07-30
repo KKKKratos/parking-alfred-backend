@@ -1,7 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.1.6.RELEASE'
     id 'java'
-    id 'net.saliman.cobertura' version '2.6.1'
+    id 'jacoco'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -39,18 +39,10 @@ dependencies {
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
 }
 
-cobertura {
-    coverageFormats = ['html', 'xml']
-    coverageEncoding = 'UTF-8'
-    coverageExcludes = ['.*Application.*']
-    coverageIgnoreMethodAnnotations = []
-    coverageCheckBranchRate = 90
-    coverageCheckLineRate = 90
-    coverageCheckPackageBranchRate = 90
-    coverageCheckPackageLineRate = 90
-    coverageCheckTotalBranchRate = 90
-    coverageCheckTotalLineRate = 90
-    coverageIgnoreTrivial = true
-    coverageCheckHaltOnFailure = true
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination file("${buildDir}/jacocoHtml")
+    }
 }
-check.dependsOn 'coberturaCheck'

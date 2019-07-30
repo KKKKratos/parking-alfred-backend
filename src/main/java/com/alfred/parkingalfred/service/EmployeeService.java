@@ -21,4 +21,5 @@ public interface EmployeeService {
     int getEmployeeCount();
 
     Employee updateEmployeeParkingLots(Long employeeId, List<Long> parkingLotIdList);
+
 }
