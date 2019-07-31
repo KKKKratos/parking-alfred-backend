@@ -5,6 +5,7 @@ import com.alfred.parkingalfred.entity.Order;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.OrderStatusEnum;
 import com.alfred.parkingalfred.enums.ParkingLotStatusEnum;
+import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
 import com.alfred.parkingalfred.form.ParkingLotForm;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
@@ -147,4 +148,5 @@ public  class ParkingLotServiceImplTest {
             objectMapper.writeValueAsString(actualParkingLot));
 
   }
+
 }
