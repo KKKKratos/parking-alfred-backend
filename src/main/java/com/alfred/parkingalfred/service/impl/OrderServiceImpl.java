@@ -135,18 +135,18 @@ public class OrderServiceImpl implements OrderService {
     }
     if (order.getStatus() != null) {
       orderFinded.setStatus(order.getStatus());
-      if (order.getType().equals(OrderTypeEnum.PARK_CAR.getCode())&&order.getStatus()
-        .equals(OrderStatusEnum.WAIT_FOR_CONFIRM.getCode())){
-        ParkingLot parkingLot =order.getParkingLot();
-        parkingLot.setOccupied(parkingLot.getOccupied()+1);
-        parkingLotRepository.save(parkingLot);
-      }
-      if (order.getType().equals(OrderTypeEnum.FETCH_CAR.getCode())&&order.getStatus()
-        .equals(OrderStatusEnum.WAIT_FOR_CONFIRM.getCode())){
-        ParkingLot parkingLot =order.getParkingLot();
-        parkingLot.setOccupied(parkingLot.getOccupied()-1);
-        parkingLotRepository.save(parkingLot);
-      }
+//      if (order.getType().equals(OrderTypeEnum.PARK_CAR.getCode())&&order.getStatus()
+//        .equals(OrderStatusEnum.WAIT_FOR_CONFIRM.getCode())){
+//        ParkingLot parkingLot = orderFinded.getParkingLot();
+//        parkingLot.setOccupied(parkingLot.getOccupied()+1);
+//        parkingLotRepository.save(parkingLot);
+//      }
+//      if (order.getType().equals(OrderTypeEnum.FETCH_CAR.getCode())&&order.getStatus()
+//        .equals(OrderStatusEnum.WAIT_FOR_CONFIRM.getCode())){
+//        ParkingLot parkingLot = orderFinded.getParkingLot();
+//        parkingLot.setOccupied(parkingLot.getOccupied()-1);
+//        parkingLotRepository.save(parkingLot);
+//      }
     }
     if (order.getEmployee() != null && order.getEmployee().getId() != null) {
       updateOrderEmployee(orderFinded, order);
