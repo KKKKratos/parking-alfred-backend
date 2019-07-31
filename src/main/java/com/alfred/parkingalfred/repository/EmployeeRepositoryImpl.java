@@ -18,15 +18,17 @@ public class EmployeeRepositoryImpl {
       EmployeeVO employeeVO){
     StringBuffer querySql = new StringBuffer("SELECT * FROM employee e where 1=1 ");
     if (!StringUtils.isEmpty(employeeVO.getName())){
-      querySql.append(" and e.name like CONCAT('%' ,"+employeeVO.getName()+", '%') ");
+      querySql.append(" and e.name like CONCAT('%' ,"+employeeVO.getName()+", '%')");
     }
     if (!StringUtils.isEmpty(employeeVO.getTelephone())){
-      querySql.append(" and e.telephone like CONCAT('%' ,"+employeeVO.getTelephone()+", '%')");
+      querySql.append(" and e.telephone like CONCAT('%' ,'"+employeeVO.getTelephone()+"', '%')");
     }
     if (employeeVO.getRole()!=null){
       querySql.append(" and e.role like CONCAT('%' ,"+employeeVO.getRole()+", '%')");
     }
-    querySql.append("limit "+((page-1)*size)+","+size);
+    int start = (page-1)>0?page-1:0;
+    int offset = size;
+    querySql.append(" limit "+start+","+offset);
     Query query = entityManager.createNativeQuery(querySql.toString() , Employee.class);
     List<Employee> list = query.getResultList();
     return list;

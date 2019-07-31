@@ -101,4 +101,11 @@ public class EmployeeController {
     employeeVO.setParkingLotVOS(parkingLotVOS);
     return ResultVOUtil.success(employeeVO);
   }
+
+  @PutMapping("/employees/{employeeId}")
+  public ResultVO updateEmployee(@PathVariable Long employeeId,@RequestBody EmployeeVO employeeVO) {
+    Employee employeeResult = employeeService.updateEmployee(employeeId,employeeVO);
+    EmployeeVO employeeVOResult = EmployeeToEmployeeVOConverter.convert(employeeResult);
+    return ResultVOUtil.success(employeeVOResult);
+  }
 }

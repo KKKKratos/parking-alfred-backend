@@ -191,4 +191,23 @@ public class EmployeeControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void should_return_employee_to_call_updateEmployee_with_true_param() throws Exception {
+        Long id = 1L;
+        EmployeeVO employeeVO = new EmployeeVO();
+        employeeVO.setId(id);
+        employeeVO.setStatus(2);
+        employeeVO.setTelephone("2312");
+        employeeVO.setName("21312");
+        employeeVO.setRole(2);
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeVO,employee);
+        when(employeeService.updateEmployee(anyLong(), any(EmployeeVO.class))).thenReturn(employee);
+        mockMvc.perform(put("/employees/{employeeId}", id)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(employeeVO))
+          .accept(MediaType.APPLICATION_JSON))
+          .andExpect(status().isOk());
+    }
 }
