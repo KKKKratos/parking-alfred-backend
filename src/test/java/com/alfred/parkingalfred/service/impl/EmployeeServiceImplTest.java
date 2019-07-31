@@ -31,6 +31,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -174,5 +175,29 @@ public class EmployeeServiceImplTest {
 
     assertEquals(objectMapper.writeValueAsString(afterUpdateEmployee),
         objectMapper.writeValueAsString(actualEmployee));
+  }
+
+  @Test
+  public void should_return_employee_when_call_updateEmployee_API_with_true_param(){
+    EmployeeVO employeeVO = new EmployeeVO();
+    employeeVO.setRole(1);
+    employeeVO.setTelephone("1316");
+    employeeVO.setName("1232131");
+    employeeVO.setStatus(2);
+    Long employeeId = 1l;
+    Employee employee = new Employee();
+    employeeVO.setRole(1);
+    employeeVO.setTelephone("1");
+    employeeVO.setName("2");
+    employeeVO.setStatus(1);
+    employee.setId(1l);
+    Employee employeeExpected = new Employee();
+    BeanUtils.copyProperties(employeeVO,employeeExpected);
+    employeeExpected.setId(employeeId);
+    when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(employee));
+    when(employeeRepository.save(employee)).thenReturn(employeeExpected);
+    Employee employeeActual = employeeService.updateEmployee(employeeId,employeeVO);
+    Assert.assertEquals(employeeVO.getName(),employeeActual.getName());
+
   }
 }

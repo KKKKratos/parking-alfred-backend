@@ -13,7 +13,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -43,9 +42,8 @@ public class Order {
   @Column(nullable = false)
   private Integer status;
 
-  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "employeeId",referencedColumnName="id")
-  @JsonIgnore
   private Employee employee;
 
   @Column(nullable = false)

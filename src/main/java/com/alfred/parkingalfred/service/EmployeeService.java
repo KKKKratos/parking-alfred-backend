@@ -8,18 +8,19 @@ import java.util.List;
 
 public interface EmployeeService {
 
-    Employee getEmployeeByMailAndPassword(String mail, String password);
+  Employee getEmployeeByMailAndPassword(String mail, String password);
 
-    boolean doesEmployeeHasNotFullParkingLots(Long employeeId);
+  boolean doesEmployeeHasNotFullParkingLots(Long employeeId);
 
-    List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page, Integer size,EmployeeVO employeeVO);
+  List<EmployeeVO> getAllEmployeesByPageAndSize(Integer page, Integer size, EmployeeVO employeeVO);
 
-    Employee getEmployeeById(Long id);
+  Employee getEmployeeById(Long id);
 
-    EmployeeVO createEmployee(EmployeeForm employeeFormmployee);
+  EmployeeVO createEmployee(EmployeeForm employeeFormmployee);
 
-    int getEmployeeCount();
+  int getEmployeeCount(Integer role);
 
-    Employee updateEmployeeParkingLots(Long employeeId, List<Long> parkingLotIdList);
+  Employee updateEmployee(Long id,EmployeeVO employeeVO);
 
+  Employee updateEmployeeParkingLots(Long employeeId, List<Long> parkingLotIdList);
 }

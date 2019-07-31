@@ -42,7 +42,7 @@ public class Employee {
   private Integer role;
   @OneToMany(mappedBy = "employee",
       targetEntity = Order.class,
-      cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+      cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JsonIgnore
   private List<Order> orders;
 

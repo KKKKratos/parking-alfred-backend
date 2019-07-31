@@ -78,7 +78,7 @@ public class EmployeeController {
     employeeVO.setTelephone(telephone);
     employeeVO.setRole(role);
     List<EmployeeVO> employeeVOList = employeeService.getAllEmployeesByPageAndSize(page, size,employeeVO);
-    int totalCount = employeeService.getEmployeeCount();
+    int totalCount = employeeService.getEmployeeCount(role);
     Map<String,Object> objectMap = new HashMap<>();
     objectMap.put("employees",employeeVOList);
     objectMap.put("totalCount",totalCount);
@@ -110,5 +110,12 @@ public class EmployeeController {
             .collect(Collectors.toList());
     employeeVO.setParkingLotVOS(parkingLotVOS);
     return ResultVOUtil.success(employeeVO);
+  }
+
+  @PutMapping("/employees/{id}")
+  public ResultVO updateEmployee(@PathVariable(value = "id") Long employeeId,@RequestBody EmployeeVO employeeVO) {
+    Employee employeeResult = employeeService.updateEmployee(employeeId,employeeVO);
+    EmployeeVO employeeVOResult = EmployeeToEmployeeVOConverter.convert(employeeResult);
+    return ResultVOUtil.success(employeeVOResult);
   }
 }

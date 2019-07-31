@@ -14,16 +14,11 @@ import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.utils.EncodingUtil;
 import com.alfred.parkingalfred.utils.UUIDUtil;
 import com.alfred.parkingalfred.vo.EmployeeVO;
-
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
+import javax.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -93,9 +88,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeVOResult;
     }
 
-    public int getEmployeeCount() {
-        //ToDo
-        return employeeRepository.getEmployeeCount();
+    @Override
+    public int getEmployeeCount(Integer role) {
+
+        return employeeRepository.getEmployeeCount(role);
     }
 
     @Override
@@ -110,5 +106,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.saveAndFlush(employee);
         return employee;
     }
+
+    @Override
+    public Employee updateEmployee(Long id,EmployeeVO employeeVO) {
+        Employee employee = employeeRepository.findById(id)
+          .orElseThrow(() -> new EmployeeNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
+        if (employeeVO.getRole()!=null){
+         employee.setRole(employeeVO.getRole());
+        }
+        if (employeeVO.getName()!=null){
+            employee.setName(employeeVO.getName());
+        }
+        if (employeeVO.getTelephone()!=null){
+            employee.setTelephone(employeeVO.getTelephone());
+        }
+        if (employeeVO.getStatus()!=null){
+            employee.setStatus(employeeVO.getStatus());
+        }
+        return employeeRepository.save(employee);
+    }
 }
-;

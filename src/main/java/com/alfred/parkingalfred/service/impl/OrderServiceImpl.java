@@ -31,9 +31,10 @@ public class OrderServiceImpl implements OrderService {
 
   private static final int TIMEOUT = 10 * 1000;
 
-  public OrderServiceImpl(OrderRepository orderRepository,EmployeeRepository employeeRepository) {
+
+  public OrderServiceImpl(OrderRepository orderRepository, EmployeeRepository employeeRepository) {
     this.orderRepository = orderRepository;
-    this.employeeRepository=employeeRepository;
+    this.employeeRepository = employeeRepository;
   }
 
   @Override
@@ -120,8 +121,8 @@ public class OrderServiceImpl implements OrderService {
       if (order.getStatus() != null) {
           orderFinded.setStatus(order.getStatus());
       }
-      if (order.getEmployee() != null) {
-          orderFinded.setEmployee(order.getEmployee());
+      if (order.getEmployee() != null && order.getEmployee().getId() != null) {
+          updateOrderEmployee(orderFinded, order);
       }
       if (order.getCarNumber() != null) {
           orderFinded.setCarNumber(order.getCarNumber());
@@ -129,6 +130,12 @@ public class OrderServiceImpl implements OrderService {
       if (order.getParkingLot() != null) {
           orderFinded.setParkingLot(order.getParkingLot());
       }
+  }
+
+  private void updateOrderEmployee(Order orderFinded, Order order) {
+    Employee employee = employeeRepository.findById(order.getEmployee().getId())
+        .orElseThrow(() -> new OrderNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
+    orderFinded.setEmployee(employee);
   }
     @Override
     public List<Order> getOrdersByEmployeeId(Long id) {

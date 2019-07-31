@@ -8,8 +8,6 @@ import com.alfred.parkingalfred.vo.ResultVO;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @CrossOrigin
 public class OrderController {
@@ -37,9 +35,8 @@ public class OrderController {
         return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.getOrderById(id));
     }
 
-
     @PutMapping(value = "/orders/{id}")
     public ResultVO updateOrderById(@PathVariable Long id, @RequestBody Order order) {
-        return new ResultVO(ResultEnum.SUCCESS.getStatus(), null, orderService.updateOrderById(id, order));
+        return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.updateOrderById(id, order));
     }
 }
