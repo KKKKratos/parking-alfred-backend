@@ -211,6 +211,23 @@ public class EmployeeControllerTest {
     }
 
     @Test
+    public void should_create_customer_when_customer_sign_up() throws Exception {
+      Employee employee = new Employee();
+      employee.setName("name");
+      employee.setMail("mail");
+      employee.setPassword("password");
+      employee.setTelephone("telephone");
+
+      when(employeeService.createCustomer(any())).thenReturn(employee);
+
+      mockMvc.perform(post("/customers")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(employee))
+          .accept(MediaType.APPLICATION_JSON))
+          .andExpect(status().isOk());
+    }
+
+    @Test
     public void should_return_employee_to_call_updateEmployee_with_true_param() throws Exception {
         Long id = 1L;
         EmployeeVO employeeVO = new EmployeeVO();

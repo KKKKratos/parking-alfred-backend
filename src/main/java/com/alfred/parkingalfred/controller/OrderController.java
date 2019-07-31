@@ -21,8 +21,9 @@ public class OrderController {
     @GetMapping("/orders")
     public ResultVO getOrders(@RequestParam(name = "sortProperty", required = false) String sortProperty,
                               @RequestParam(name = "sortOrder", required = false) String sortOrder,
-                              @RequestParam(name = "status", required = false) Integer filterStatus) {
-        return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.getOrders(sortProperty, sortOrder, filterStatus));
+                              @RequestParam(name = "status", required = false) Integer filterStatus,
+                              @RequestParam(name="carNumber",required = false)String carNumber) {
+        return new ResultVO<>(ResultEnum.SUCCESS.getStatus(), null, orderService.getOrders(sortProperty, sortOrder, filterStatus,carNumber));
     }
 
     @PostMapping("/orders")

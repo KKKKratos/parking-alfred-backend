@@ -7,7 +7,9 @@ public enum RoleEnum implements BaseEnum {
 
     PARKING_BOY(1,"PARKING_BOY"),
     MANAGER(2,"MANAGER"),
-    ADMIN(3,"ADMIN");
+    ADMIN(3,"ADMIN"),
+    CUSTOMER(4, "CUSTOMER");
+
     private Integer code;
 
     private String message;

@@ -118,4 +118,12 @@ public class EmployeeController {
     EmployeeVO employeeVOResult = EmployeeToEmployeeVOConverter.convert(employeeResult);
     return ResultVOUtil.success(employeeVOResult);
   }
+  @PostMapping("/customers")
+  public ResultVO createCustomer(@Valid @RequestBody EmployeeForm employeeForm, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      throw new IncorrectParameterException(ResultEnum.PARAM_ERROR);
+    }
+    Employee employee = employeeService.createCustomer(employeeForm);
+    return ResultVOUtil.success(EmployeeToEmployeeVOConverter.convert(employee));
+  }
 }

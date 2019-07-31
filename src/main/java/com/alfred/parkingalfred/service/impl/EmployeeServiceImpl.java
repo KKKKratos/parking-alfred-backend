@@ -5,7 +5,9 @@ import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.Order;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.ResultEnum;
+import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
+import com.alfred.parkingalfred.exception.IncorrectParameterException;
 import com.alfred.parkingalfred.form.EmployeeForm;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.EmployeeRepositoryImpl;
@@ -14,6 +16,7 @@ import com.alfred.parkingalfred.service.EmployeeService;
 import com.alfred.parkingalfred.utils.EncodingUtil;
 import com.alfred.parkingalfred.utils.UUIDUtil;
 import com.alfred.parkingalfred.vo.EmployeeVO;
+import io.netty.util.internal.StringUtil;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
@@ -90,7 +93,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public int getEmployeeCount(Integer role) {
-
         return employeeRepository.getEmployeeCount(role);
     }
 
@@ -105,6 +107,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeParkingLots.addAll(parkingLots);
         employeeRepository.saveAndFlush(employee);
         return employee;
+    }
+
+    @Override
+    public Employee createCustomer(EmployeeForm employeeForm) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeForm, employee);
+        employee.setRole(RoleEnum.CUSTOMER.getCode());
+        String password = employee.getPassword();
+        if (StringUtil.isNullOrEmpty(password))
+            throw new IncorrectParameterException(ResultEnum.PARAM_ERROR);
+        String encodedPassword = EncodingUtil.encodingByMd5(password);
+        employee.setPassword(encodedPassword);
+        return employeeRepository.save(employee);
     }
 
     @Override
