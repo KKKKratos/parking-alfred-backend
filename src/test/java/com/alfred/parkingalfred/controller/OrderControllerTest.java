@@ -150,4 +150,22 @@ public class OrderControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void should_assign_order_to_employee_when_manager_assign_order() throws Exception {
+        Long id = 1L;
+        Employee employee = new Employee();
+        employee.setId(id);
+        Order order = new Order();
+        order.setStatus(OrderStatusEnum.WAIT_FOR_CONFIRM.getCode());
+        order.setEmployee(employee);
+
+        when(orderService.updateOrderById(anyLong(), any(Order.class))).thenReturn(order);
+        String token = JwtUtil.generateToken(employee);
+
+        mockMvc.perform(get("/orders/{id}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(order))
+            .header("Authorization", "Bearer " + token))
+            .andExpect(status().isOk());
+    }
 }

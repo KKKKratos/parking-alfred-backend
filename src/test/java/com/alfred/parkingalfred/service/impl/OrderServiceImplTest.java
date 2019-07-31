@@ -1,11 +1,13 @@
 package com.alfred.parkingalfred.service.impl;
 
 import com.alfred.parkingalfred.dto.CreateOrderDto;
+import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.Order;
 import com.alfred.parkingalfred.enums.OrderStatusEnum;
 import com.alfred.parkingalfred.enums.OrderTypeEnum;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.exception.OrderNotExistedException;
+import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.OrderRepository;
 import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.utils.RedisLock;
@@ -33,6 +35,8 @@ public class OrderServiceImplTest {
 
     private OrderRepository orderRepository;
 
+    private EmployeeRepository employeeRepository;
+
     private ObjectMapper objectMapper;
 
     private RedisLock redisLock;
@@ -41,7 +45,8 @@ public class OrderServiceImplTest {
     public void setUp() {
         redisLock = Mockito.mock(RedisLock.class);
         orderRepository = mock(OrderRepository.class);
-        orderService = new OrderServiceImpl(orderRepository);
+        employeeRepository = mock(EmployeeRepository.class);
+        orderService = new OrderServiceImpl(orderRepository, employeeRepository);
         objectMapper = new ObjectMapper();
     }
 
@@ -151,5 +156,29 @@ public class OrderServiceImplTest {
         List<Order> actualOrderList = orderService.getOrders("reservationTime", "desc", null);
 
         assertEquals(expectOrders.size(), actualOrderList.size());
+    }
+
+    @Test
+    public void should_assign_order_to_employee_when_manager_assign_order()
+        throws JsonProcessingException {
+        Order order = new Order();
+        order.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
+
+        Employee employee = new Employee();
+        employee.setId(1L);
+        Order expectOrder = new Order();
+        expectOrder.setStatus(OrderStatusEnum.WAIT_FOR_CONFIRM.getCode());
+        expectOrder.setEmployee(employee);
+
+        ReflectionTestUtils.setField(orderService, OrderServiceImpl.class, "redisLock", redisLock
+            , RedisLock.class);
+        when(redisLock.lock(any(String.class), any(String.class))).thenReturn(true);
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(employee));
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
+        when(orderRepository.save(any())).thenReturn(expectOrder);
+        Order actualOrder = orderService.updateOrderById(1L, expectOrder);
+
+        assertEquals(objectMapper.writeValueAsString(expectOrder),
+            objectMapper.writeValueAsString(actualOrder));
     }
 }

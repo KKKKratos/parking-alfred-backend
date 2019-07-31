@@ -2,11 +2,13 @@
 package com.alfred.parkingalfred.service.impl;
 
 import com.alfred.parkingalfred.dto.CreateOrderDto;
+import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.Order;
 import com.alfred.parkingalfred.enums.OrderStatusEnum;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.exception.OrderNotExistedException;
 import com.alfred.parkingalfred.exception.SecKillOrderException;
+import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.OrderRepository;
 import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.utils.RedisLock;
@@ -28,8 +30,11 @@ public class OrderServiceImpl implements OrderService {
 
   private final OrderRepository orderRepository;
 
-  public OrderServiceImpl(OrderRepository orderRepository) {
+  private final EmployeeRepository employeeRepository;
+
+  public OrderServiceImpl(OrderRepository orderRepository, EmployeeRepository employeeRepository) {
     this.orderRepository = orderRepository;
+    this.employeeRepository = employeeRepository;
   }
 
   @Override
@@ -116,8 +121,8 @@ public class OrderServiceImpl implements OrderService {
       if (order.getStatus() != null) {
           orderFinded.setStatus(order.getStatus());
       }
-      if (order.getEmployee() != null) {
-          orderFinded.setEmployee(order.getEmployee());
+      if (order.getEmployee() != null && order.getEmployee().getId() != null) {
+          updateOrderEmployee(orderFinded, order);
       }
       if (order.getCarNumber() != null) {
           orderFinded.setCarNumber(order.getCarNumber());
@@ -125,5 +130,11 @@ public class OrderServiceImpl implements OrderService {
       if (order.getParkingLot() != null) {
           orderFinded.setParkingLot(order.getParkingLot());
       }
+  }
+
+  private void updateOrderEmployee(Order orderFinded, Order order) {
+    Employee employee = employeeRepository.findById(order.getEmployee().getId())
+        .orElseThrow(() -> new OrderNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
+    orderFinded.setEmployee(employee);
   }
 }
