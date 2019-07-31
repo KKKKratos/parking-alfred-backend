@@ -1,5 +1,6 @@
 package com.alfred.parkingalfred.repository;
 
+import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -19,4 +20,5 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot,Long> {
   int getParkingLotCount();
 
   Page<ParkingLot> findAllByNameLike(String name, Pageable pageable);
+
 }

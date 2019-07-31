@@ -89,7 +89,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public int getEmployeeCount(Integer role) {
-
         return employeeRepository.getEmployeeCount(role);
     }
 

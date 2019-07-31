@@ -3,12 +3,15 @@ package com.alfred.parkingalfred.service.impl;
 import com.alfred.parkingalfred.dto.CreateOrderDto;
 import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.Order;
+import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.OrderStatusEnum;
+import com.alfred.parkingalfred.enums.OrderTypeEnum;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.exception.OrderNotExistedException;
 import com.alfred.parkingalfred.exception.SecKillOrderException;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.OrderRepository;
+import com.alfred.parkingalfred.repository.ParkingLotRepository;
 import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.utils.RedisLock;
 import com.alfred.parkingalfred.utils.ReflectionUtil;
@@ -30,9 +33,12 @@ public class OrderServiceImpl implements OrderService {
 
   private final EmployeeRepository employeeRepository;
 
-  public OrderServiceImpl(OrderRepository orderRepository, EmployeeRepository employeeRepository) {
+  private final ParkingLotRepository parkingLotRepository;
+  public OrderServiceImpl(OrderRepository orderRepository, EmployeeRepository employeeRepository,
+                          ParkingLotRepository parkingLotRepository) {
     this.orderRepository = orderRepository;
     this.employeeRepository = employeeRepository;
+    this.parkingLotRepository=parkingLotRepository;
   }
 
   @Override
@@ -119,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
 
   private void updateOrder(Order orderFinded, Order order) {
     if (order.getType() != null) {
-      orderFinded.setStatus(order.getType());
+      orderFinded.setType(order.getType());
     }
     if (order.getReservationTime() != null) {
       orderFinded.setReservationTime(order.getReservationTime());
@@ -129,6 +135,18 @@ public class OrderServiceImpl implements OrderService {
     }
     if (order.getStatus() != null) {
       orderFinded.setStatus(order.getStatus());
+      if (order.getType().equals(OrderTypeEnum.PARK_CAR.getCode())&&order.getStatus()
+        .equals(OrderStatusEnum.WAIT_FOR_CONFIRM.getCode())){
+        ParkingLot parkingLot =order.getParkingLot();
+        parkingLot.setOccupied(parkingLot.getOccupied()+1);
+        parkingLotRepository.save(parkingLot);
+      }
+      if (order.getType().equals(OrderTypeEnum.FETCH_CAR.getCode())&&order.getStatus()
+        .equals(OrderStatusEnum.WAIT_FOR_CONFIRM.getCode())){
+        ParkingLot parkingLot =order.getParkingLot();
+        parkingLot.setOccupied(parkingLot.getOccupied()-1);
+        parkingLotRepository.save(parkingLot);
+      }
     }
     if (order.getEmployee() != null && order.getEmployee().getId() != null) {
       updateOrderEmployee(orderFinded, order);
