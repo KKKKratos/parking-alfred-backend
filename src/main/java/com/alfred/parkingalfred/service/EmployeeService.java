@@ -23,4 +23,6 @@ public interface EmployeeService {
   Employee updateEmployee(Long id,EmployeeVO employeeVO);
 
   Employee updateEmployeeParkingLots(Long employeeId, List<Long> parkingLotIdList);
+
+  Employee createCustomer(EmployeeForm employeeForm);
 }
