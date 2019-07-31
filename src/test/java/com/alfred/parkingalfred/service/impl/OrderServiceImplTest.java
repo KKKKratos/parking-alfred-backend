@@ -112,7 +112,7 @@ public class OrderServiceImplTest {
         }};
 
         Mockito.when(orderRepository.findAll()).thenReturn(allOrders);
-        List<Order> actualOrderList = orderService.getOrders(null, null, OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
+        List<Order> actualOrderList = orderService.getOrders(null, null, OrderStatusEnum.WAIT_FOR_RECEIVE.getCode(),null);
 
         assertEquals(expectOrders.size(), actualOrderList.size());
     }
@@ -153,7 +153,7 @@ public class OrderServiceImplTest {
         }};
 
         Mockito.when(orderRepository.findAll()).thenReturn(allOrders);
-        List<Order> actualOrderList = orderService.getOrders("reservationTime", "desc", null);
+        List<Order> actualOrderList = orderService.getOrders("reservationTime", "desc", null,null);
 
         assertEquals(expectOrders.size(), actualOrderList.size());
     }
@@ -180,5 +180,31 @@ public class OrderServiceImplTest {
 
         assertEquals(objectMapper.writeValueAsString(expectOrder),
             objectMapper.writeValueAsString(actualOrder));
+    }
+
+    @Test
+    public void should_return_order_list_when_call_getAll_employees_with_true_param(){
+        Order order_1 = new Order();
+        order_1.setCarNumber("123");
+        order_1.setId(1l);
+        order_1.setOrderId("test");
+        order_1.setStatus(OrderStatusEnum.WAIT_FOR_RECEIVE.getCode());
+        Order order_2 = new Order();
+        order_2.setId(2l);
+        order_2.setCarNumber("222");
+        order_2.setOrderId("test2");
+        order_2.setStatus(OrderStatusEnum.CONFIRM.getCode());
+        List<Order> allOrders = new ArrayList<Order>() {{
+            add(order_1);
+            add(order_2);
+        }};
+        List<Order> expectOrders = new ArrayList<Order>() {{
+            add(order_1);
+        }};
+
+        Mockito.when(orderRepository.findAll()).thenReturn(allOrders);
+        List<Order> actualOrderList = orderService.getOrders("carNumber", "ASC",
+          OrderStatusEnum.WAIT_FOR_RECEIVE.getCode(),"2");
+        assertEquals(expectOrders.size(), actualOrderList.size());
     }
 }
