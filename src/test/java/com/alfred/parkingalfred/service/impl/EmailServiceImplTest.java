@@ -36,4 +36,21 @@ public class EmailServiceImplTest {
     employee.setPassword("213213213");
     emailService.sendEmail(employee);
   }
+
+  @Test
+  void should_send_a_email_when_receive_email_event_true_param() {
+    javaMailSender = Mockito.mock(JavaMailSender.class);
+    emailConfig = Mockito.mock(EmailConfig.class);
+    ReflectionTestUtils.setField(emailService,EmailServiceImpl.class
+      ,"javaMailSender",javaMailSender, JavaMailSender.class);
+    ReflectionTestUtils.setField(emailService,EmailServiceImpl.class
+      ,"emailConfig",emailConfig, EmailConfig.class);
+    Employee employee = new Employee();
+    employee.setId(1l);
+    employee.setStatus(1);
+    employee.setTelephone("12321312");
+    employee.setMail("764974614@qq.com");
+    employee.setPassword("213213213");
+    emailService.placeCreateEmployeeService(employee);
+  }
 }
