@@ -25,23 +25,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.EntityManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class EmployeeServiceImplTest {
 
@@ -118,12 +107,12 @@ public class EmployeeServiceImplTest {
     List<Employee> employeeList = new ArrayList<Employee>();
     for (int i = 0; i < 10; i++) {
       Employee employee = new Employee();
-      employee.setName("张" + i);
+      employee.setName("name");
       employee.setTelephone("13" + i);
       employeeList.add(employee);
     }
     EmployeeVO employeeVO = new EmployeeVO();
-    employeeVO.setName("张");
+    employeeVO.setName("name");
     employeeVO.setTelephone("13");
     when(employeeRepositoryImpl.getAllByQueryWithPageAndEmployeeVO(1,10,employeeVO))
         .thenReturn(employeeList);
@@ -173,6 +162,29 @@ public class EmployeeServiceImplTest {
 
     assertEquals(objectMapper.writeValueAsString(afterUpdateEmployee),
         objectMapper.writeValueAsString(actualEmployee));
+  }
+
+  @Test
+  public void should_return_employee_when_call_updateEmployee_API_with_true_param(){
+    EmployeeVO employeeVO = new EmployeeVO();
+    employeeVO.setRole(1);
+    employeeVO.setTelephone("1316");
+    employeeVO.setName("1232131");
+    employeeVO.setStatus(2);
+    Long employeeId = 1L;
+    Employee employee = new Employee();
+    employeeVO.setRole(1);
+    employeeVO.setTelephone("1");
+    employeeVO.setName("2");
+    employeeVO.setStatus(1);
+    employee.setId(1L);
+    Employee employeeExpected = new Employee();
+    BeanUtils.copyProperties(employeeVO,employeeExpected);
+    employeeExpected.setId(employeeId);
+    when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(employee));
+    when(employeeRepository.save(employee)).thenReturn(employeeExpected);
+    Employee employeeActual = employeeService.updateEmployee(employeeId,employeeVO);
+    Assert.assertEquals(employeeVO.getName(),employeeActual.getName());
   }
 
   @Test

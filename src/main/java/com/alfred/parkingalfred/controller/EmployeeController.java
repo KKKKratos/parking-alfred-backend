@@ -102,6 +102,12 @@ public class EmployeeController {
     return ResultVOUtil.success(employeeVO);
   }
 
+  @PutMapping("/employees/{id}")
+  public ResultVO updateEmployee(@PathVariable(value = "id") Long employeeId,@RequestBody EmployeeVO employeeVO) {
+    Employee employeeResult = employeeService.updateEmployee(employeeId,employeeVO);
+    EmployeeVO employeeVOResult = EmployeeToEmployeeVOConverter.convert(employeeResult);
+    return ResultVOUtil.success(employeeVOResult);
+  }
   @PostMapping("/customers")
   public ResultVO createCustomer(@Valid @RequestBody EmployeeForm employeeForm, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {

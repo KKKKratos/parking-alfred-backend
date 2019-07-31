@@ -54,7 +54,7 @@ public class OrderControllerTest {
 
     @Test
     public void should_return_orders_when_get_it() throws Exception {
-        when(orderService.getOrders(null, null, null)).thenReturn(orders);
+        when(orderService.getOrders(null, null, null,null)).thenReturn(orders);
 
         mockMvc.perform(get("/orders"))
                 .andExpect(jsonPath("$.data.length()")
@@ -66,7 +66,7 @@ public class OrderControllerTest {
         List<Order> newOrders = new ArrayList<>();
         newOrders.add(new Order("1", 1, "南方软件园", 1));
 
-        when(orderService.getOrders(null, null, 1)).thenReturn(newOrders);
+        when(orderService.getOrders(null, null, 1,null)).thenReturn(newOrders);
         mockMvc.perform(get("/orders").param("status", "1"))
                 .andExpect(jsonPath("$.data.length()")
                         .value(1));
@@ -83,7 +83,7 @@ public class OrderControllerTest {
             add(order_1);
         }};
 
-        when(orderService.getOrders("reservationTime", "desc", null)).thenReturn(expectOrders);
+        when(orderService.getOrders("reservationTime", "desc", null,null)).thenReturn(expectOrders);
         mockMvc.perform(get("/orders")
                 .param("sortProperty", "reservationTime")
                 .param("sortOrder", "desc"))
