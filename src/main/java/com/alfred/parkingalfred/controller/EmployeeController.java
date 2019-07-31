@@ -68,7 +68,7 @@ public class EmployeeController {
     employeeVO.setTelephone(telephone);
     employeeVO.setRole(role);
     List<EmployeeVO> employeeVOList = employeeService.getAllEmployeesByPageAndSize(page, size,employeeVO);
-    int totalCount = employeeService.getEmployeeCount();
+    int totalCount = employeeService.getEmployeeCount(role);
     Map<String,Object> objectMap = new HashMap<>();
     objectMap.put("employees",employeeVOList);
     objectMap.put("totalCount",totalCount);

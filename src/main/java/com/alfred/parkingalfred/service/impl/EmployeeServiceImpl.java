@@ -92,9 +92,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeVOResult;
     }
 
-    public int getEmployeeCount() {
+    public int getEmployeeCount(Integer role) {
         //ToDo
-        return employeeRepository.getEmployeeCount();
+        return employeeRepository.getEmployeeCount(role);
     }
 
     @Override
