@@ -1,12 +1,14 @@
 package com.alfred.parkingalfred.controller;
 
 import com.alfred.parkingalfred.entity.Employee;
+import com.alfred.parkingalfred.entity.Order;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
 import com.alfred.parkingalfred.form.EmployeeForm;
 import com.alfred.parkingalfred.service.EmployeeService;
+import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.service.ParkingLotService;
 import com.alfred.parkingalfred.utils.JwtUtil;
 
@@ -42,6 +44,8 @@ public class EmployeeControllerTest {
     @MockBean
     private EmployeeService employeeService;
 
+    @MockBean
+    private OrderService orderService;
     @MockBean
     private ParkingLotService parkingLotService;
 
@@ -100,6 +104,20 @@ public class EmployeeControllerTest {
                 .thenReturn(Collections.singletonList(parkingLot));
         mockMvc.perform(get("/employees/{employeeId}/parking-lots/", employeeId)
                 .header("Authorization", "Bearer " + token)
+        ).andExpect(status().isOk());
+    }
+    @Test
+    public void should_return_orders_when_call_getOrdersByEmployeeId_API_with_true_param()
+        throws Exception {
+        Long employeeId = 1L;
+        Employee employee = new Employee();
+        employee.setId(employeeId);
+        String token = JwtUtil.generateToken(employee);
+        Order order = new Order("1", 1,  "A", 2, employee);
+        when(orderService.getOrdersByEmployeeId(anyLong()))
+            .thenReturn(Collections.singletonList(order));
+        mockMvc.perform(get("/employees/{employeeId}/orders/", employeeId)
+            .header("Authorization", "Bearer " + token)
         ).andExpect(status().isOk());
     }
 

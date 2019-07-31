@@ -3,11 +3,13 @@ package com.alfred.parkingalfred.controller;
 import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
 import com.alfred.parkingalfred.converter.ParkingLotToParkingLotVOConverter;
 import com.alfred.parkingalfred.entity.Employee;
+import com.alfred.parkingalfred.entity.Order;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.exception.IncorrectParameterException;
 import com.alfred.parkingalfred.form.EmployeeForm;
 import com.alfred.parkingalfred.service.EmployeeService;
+import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.service.ParkingLotService;
 import com.alfred.parkingalfred.utils.JwtUtil;
 import com.alfred.parkingalfred.vo.EmployeeVO;
@@ -32,9 +34,13 @@ public class EmployeeController {
 
   private final ParkingLotService parkingLotService;
 
-  public EmployeeController(EmployeeService employeeService, ParkingLotService parkingLotService) {
+  private final OrderService orderService;
+
+  public EmployeeController(EmployeeService employeeService, ParkingLotService parkingLotService,
+      OrderService orderService) {
     this.employeeService = employeeService;
     this.parkingLotService = parkingLotService;
+    this.orderService=orderService;
   }
 
   @PostMapping(value = "/login")
@@ -50,7 +56,11 @@ public class EmployeeController {
     List<ParkingLot> parkingLots = parkingLotService.getParkingLotsByParkingBoyId(employeeId);
     return ResultVOUtil.success(parkingLots);
   }
-
+  @GetMapping("/employees/{employeeId}/orders")
+  public ResultVO getOrdersByEmployeeId(@PathVariable Long employeeId) {
+      List<Order> orders =orderService.getOrdersByEmployeeId (employeeId);
+      return ResultVOUtil.success(orders);
+    }
   @GetMapping("/employees/{employeeId}/status")
   public ResultVO getEmployeeParkingLotStatus(@PathVariable Long employeeId) {
     boolean result = employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
