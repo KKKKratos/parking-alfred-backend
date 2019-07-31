@@ -21,4 +21,6 @@ public interface EmployeeService {
   int getEmployeeCount(Integer Role);
 
   Employee updateEmployeeParkingLots(Long employeeId, List<Long> parkingLotIdList);
+
+  Employee createCustomer(EmployeeForm employeeForm);
 }

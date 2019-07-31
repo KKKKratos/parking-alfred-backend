@@ -174,4 +174,25 @@ public class EmployeeServiceImplTest {
     assertEquals(objectMapper.writeValueAsString(afterUpdateEmployee),
         objectMapper.writeValueAsString(actualEmployee));
   }
+
+  @Test
+  public void should_create_customer_when_customer_sign_up() throws JsonProcessingException {
+    EmployeeForm employeeForm = new EmployeeForm();
+    employeeForm.setName("name");
+    employeeForm.setMail("mail");
+    employeeForm.setPassword("password");
+    employeeForm.setTelephone("telephone");
+
+    Employee expectEmployee = new Employee();
+    expectEmployee.setName("name");
+    expectEmployee.setMail("mail");
+    expectEmployee.setPassword(EncodingUtil.encodingByMd5("password"));
+    expectEmployee.setTelephone("telephone");
+    expectEmployee.setRole(RoleEnum.CUSTOMER.getCode());
+    when(employeeRepository.save(any())).thenReturn(expectEmployee);
+    Employee actualEmployee = employeeService.createCustomer(employeeForm);
+
+    assertEquals(objectMapper.writeValueAsString(expectEmployee),
+        objectMapper.writeValueAsString(actualEmployee));
+  }
 }

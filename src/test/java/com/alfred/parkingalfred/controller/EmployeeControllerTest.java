@@ -12,6 +12,7 @@ import com.alfred.parkingalfred.utils.JwtUtil;
 
 import com.alfred.parkingalfred.vo.EmployeeVO;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -190,5 +191,22 @@ public class EmployeeControllerTest {
                 .content(objectMapper.writeValueAsString(parkingLotIdList))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_create_customer_when_customer_sign_up() throws Exception {
+      Employee employee = new Employee();
+      employee.setName("name");
+      employee.setMail("mail");
+      employee.setPassword("password");
+      employee.setTelephone("telephone");
+
+      when(employeeService.createCustomer(any())).thenReturn(employee);
+
+      mockMvc.perform(post("/customers")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(employee))
+          .accept(MediaType.APPLICATION_JSON))
+          .andExpect(status().isOk());
     }
 }
