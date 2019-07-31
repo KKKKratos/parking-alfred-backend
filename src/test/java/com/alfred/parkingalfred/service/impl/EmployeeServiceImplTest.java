@@ -241,7 +241,15 @@ public class EmployeeServiceImplTest {
   @Test(expected = EmployeeNotExistedException.class)
   public void
       should_return_EmployeeNotExistedException_when_call_getEmployeeByMailAndPassword_with_wrong_param() {
-      when(employeeRepository.findByMailAndPassword(anyString(),anyString())).thenReturn(null);
-      employeeService.getEmployeeByMailAndPassword("321","2312");
+    when(employeeRepository.findByMailAndPassword(anyString(), anyString())).thenReturn(null);
+    employeeService.getEmployeeByMailAndPassword("321", "2312");
+  }
+
+  @Test(expected = EmployeeNotExistedException.class)
+  public void
+      should_return_EmployeeNotExistedException_when_call_doesEmployeeHasNotFullParkingLots() {
+    Long employeeId = 1l;
+    when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
+    employeeService.doesEmployeeHasNotFullParkingLots(employeeId);
   }
 }
