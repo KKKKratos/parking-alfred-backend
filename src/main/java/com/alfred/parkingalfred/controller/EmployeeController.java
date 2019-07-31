@@ -102,8 +102,8 @@ public class EmployeeController {
     return ResultVOUtil.success(employeeVO);
   }
 
-  @PutMapping("/employees/{employeeId}")
-  public ResultVO updateEmployee(@PathVariable Long employeeId,@RequestBody EmployeeVO employeeVO) {
+  @PutMapping("/employees/{id}")
+  public ResultVO updateEmployee(@PathVariable(value = "id") Long employeeId,@RequestBody EmployeeVO employeeVO) {
     Employee employeeResult = employeeService.updateEmployee(employeeId,employeeVO);
     EmployeeVO employeeVOResult = EmployeeToEmployeeVOConverter.convert(employeeResult);
     return ResultVOUtil.success(employeeVOResult);
