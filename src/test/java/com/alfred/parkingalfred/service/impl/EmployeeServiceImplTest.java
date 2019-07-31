@@ -11,6 +11,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.alfred.parkingalfred.entity.Employee;
+import com.alfred.parkingalfred.entity.Order;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.RoleEnum;
 import com.alfred.parkingalfred.form.EmployeeForm;

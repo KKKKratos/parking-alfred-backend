@@ -61,4 +61,12 @@ public class Order {
     this.customerAddress = customerAddress;
     this.status = status;
   }
+
+    public Order(String orderId, Integer type,  String customerAddress, Integer status, Employee employee) {
+        this.orderId = orderId;
+        this.type = type;
+        this.customerAddress = customerAddress;
+        this.status = status;
+        this.employee = employee;
+    }
 }

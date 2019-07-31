@@ -2,6 +2,7 @@ package com.alfred.parkingalfred.service.impl;
 
 import com.alfred.parkingalfred.converter.EmployeeToEmployeeVOConverter;
 import com.alfred.parkingalfred.entity.Employee;
+import com.alfred.parkingalfred.entity.Order;
 import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.exception.EmployeeNotExistedException;

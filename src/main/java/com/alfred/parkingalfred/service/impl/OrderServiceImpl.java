@@ -2,11 +2,14 @@
 package com.alfred.parkingalfred.service.impl;
 
 import com.alfred.parkingalfred.dto.CreateOrderDto;
+import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.Order;
 import com.alfred.parkingalfred.enums.OrderStatusEnum;
 import com.alfred.parkingalfred.enums.ResultEnum;
+import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
 import com.alfred.parkingalfred.exception.OrderNotExistedException;
 import com.alfred.parkingalfred.exception.SecKillOrderException;
+import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.OrderRepository;
 import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.utils.RedisLock;
@@ -20,16 +23,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OrderServiceImpl implements OrderService {
+    private final EmployeeRepository employeeRepository;
+    private final OrderRepository orderRepository;
 
   @Autowired
   private RedisLock redisLock;
 
   private static final int TIMEOUT = 10 * 1000;
 
-  private final OrderRepository orderRepository;
-
-  public OrderServiceImpl(OrderRepository orderRepository) {
+  public OrderServiceImpl(OrderRepository orderRepository,EmployeeRepository employeeRepository) {
     this.orderRepository = orderRepository;
+    this.employeeRepository=employeeRepository;
   }
 
   @Override
@@ -126,4 +130,8 @@ public class OrderServiceImpl implements OrderService {
           orderFinded.setParkingLot(order.getParkingLot());
       }
   }
+    @Override
+    public List<Order> getOrdersByEmployeeId(Long id) {
+        return orderRepository.findByEmployee_Id(id);
+    }
 }

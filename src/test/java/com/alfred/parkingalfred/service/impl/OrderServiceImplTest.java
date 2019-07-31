@@ -1,11 +1,13 @@
 package com.alfred.parkingalfred.service.impl;
 
 import com.alfred.parkingalfred.dto.CreateOrderDto;
+import com.alfred.parkingalfred.entity.Employee;
 import com.alfred.parkingalfred.entity.Order;
 import com.alfred.parkingalfred.enums.OrderStatusEnum;
 import com.alfred.parkingalfred.enums.OrderTypeEnum;
 import com.alfred.parkingalfred.enums.ResultEnum;
 import com.alfred.parkingalfred.exception.OrderNotExistedException;
+import com.alfred.parkingalfred.repository.EmployeeRepository;
 import com.alfred.parkingalfred.repository.OrderRepository;
 import com.alfred.parkingalfred.service.OrderService;
 import com.alfred.parkingalfred.utils.RedisLock;
@@ -33,6 +35,8 @@ public class OrderServiceImplTest {
 
     private OrderRepository orderRepository;
 
+    private EmployeeRepository employeeRepository;
+
     private ObjectMapper objectMapper;
 
     private RedisLock redisLock;
@@ -41,7 +45,7 @@ public class OrderServiceImplTest {
     public void setUp() {
         redisLock = Mockito.mock(RedisLock.class);
         orderRepository = mock(OrderRepository.class);
-        orderService = new OrderServiceImpl(orderRepository);
+        orderService = new OrderServiceImpl(orderRepository,employeeRepository);
         objectMapper = new ObjectMapper();
     }
 
@@ -151,5 +155,18 @@ public class OrderServiceImplTest {
         List<Order> actualOrderList = orderService.getOrders("reservationTime", "desc", null);
 
         assertEquals(expectOrders.size(), actualOrderList.size());
+    }
+
+    @Test
+    public void should_return_order_List_when_get_orders_by_Employee_Id() {
+        Long employeeId = 1L;
+        Employee employee = new Employee();
+        employee.setId(employeeId);
+        List<Order>orders=new ArrayList<>();
+        orders.add(new Order("1", 1,  "A", 2, employee));
+        Mockito.when(orderRepository.findByEmployee_Id(anyLong())).thenReturn(orders);
+        List<Order> actualOrderList = orderService.getOrdersByEmployeeId(new Long((long)1));
+
+        assertEquals(orders.size(), actualOrderList.size());
     }
 }
