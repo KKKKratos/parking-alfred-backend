@@ -1,6 +1,5 @@
 package com.alfred.parkingalfred.vo;
 
-import com.alfred.parkingalfred.entity.Employee;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +16,8 @@ public class ParkingLotVO {
     private Integer capacity;
 
     private Integer occupied;
+
+    private Integer status;
 
     private List<EmployeeVO> employeeVOS;
 }
