@@ -7,6 +7,7 @@ import com.alfred.parkingalfred.entity.ParkingLot;
 import com.alfred.parkingalfred.enums.OrderStatusEnum;
 import com.alfred.parkingalfred.enums.OrderTypeEnum;
 import com.alfred.parkingalfred.enums.ResultEnum;
+import com.alfred.parkingalfred.exception.EmployeeNotExistedException;
 import com.alfred.parkingalfred.exception.OrderNotExistedException;
 import com.alfred.parkingalfred.exception.SecKillOrderException;
 import com.alfred.parkingalfred.repository.EmployeeRepository;
@@ -24,14 +25,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OrderServiceImpl implements OrderService {
+    private final EmployeeRepository employeeRepository;
+    private final OrderRepository orderRepository;
 
   @Autowired private RedisLock redisLock;
 
   private static final int TIMEOUT = 10 * 1000;
 
-  private final OrderRepository orderRepository;
-
-  private final EmployeeRepository employeeRepository;
 
   private final ParkingLotRepository parkingLotRepository;
   public OrderServiceImpl(OrderRepository orderRepository, EmployeeRepository employeeRepository,
@@ -166,4 +166,8 @@ public class OrderServiceImpl implements OrderService {
             .orElseThrow(() -> new OrderNotExistedException(ResultEnum.RESOURCES_NOT_EXISTED));
     orderFinded.setEmployee(employee);
   }
+    @Override
+    public List<Order> getOrdersByEmployeeId(Long id) {
+        return orderRepository.findByEmployee_Id(id);
+    }
 }

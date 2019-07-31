@@ -259,6 +259,19 @@ public class OrderServiceImplTest {
   }
 
   @Test
+    public void should_return_order_List_when_get_orders_by_Employee_Id() {
+        Long employeeId = 1L;
+        Employee employee = new Employee();
+        employee.setId(employeeId);
+        List<Order>orders=new ArrayList<>();
+        orders.add(new Order("1", 1,  "A", 2, employee));
+        Mockito.when(orderRepository.findByEmployee_Id(anyLong())).thenReturn(orders);
+        List<Order> actualOrderList = orderService.getOrdersByEmployeeId(new Long((long)1));
+
+        assertEquals(orders.size(), actualOrderList.size());
+    }
+
+    @Test
   public void should_assign_order_to_employee_when_manager_assign_order()
       throws JsonProcessingException {
     Order order = new Order();
