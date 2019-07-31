@@ -142,7 +142,7 @@ public class EmployeeControllerTest {
         List<EmployeeVO> employeeVOList = new ArrayList<>();
         employeeVOList.add(new EmployeeVO());
         when(employeeService.getAllEmployeesByPageAndSize(1, 3,new EmployeeVO())).thenReturn(employeeVOList);
-        when(employeeService.getEmployeeCount()).thenReturn(1);
+        when(employeeService.getEmployeeCount(null)).thenReturn(1);
         mockMvc.perform(get("/employees", 1, 3, 1)
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
