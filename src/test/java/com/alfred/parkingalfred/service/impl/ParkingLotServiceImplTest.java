@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -148,5 +149,44 @@ public  class ParkingLotServiceImplTest {
             objectMapper.writeValueAsString(actualParkingLot));
 
   }
-
+  @Test
+  public void should_return_parkingLot_when_call_update_updateParkingLotById_with_all_not_null_param(){
+    ParkingLot parkingLotInput = new ParkingLot();
+    parkingLotInput.setName("32321");
+    parkingLotInput.setCapacity(100);
+    parkingLotInput.setOccupied(100);
+    parkingLotInput.setStatus(ParkingLotStatusEnum.USABLE.getCode());
+    Long id = 1l;
+    ParkingLot parkingLotExpected = new ParkingLot();
+    when(parkingLotRepository.findById(anyLong())).thenReturn(Optional.of(parkingLotExpected));
+    when(parkingLotRepository.save(any(ParkingLot.class))).thenReturn(parkingLotInput);
+    ParkingLot parkingLotActual = parkingLotServiceImpl.updateParkingLotById(id,parkingLotInput);
+    Assert.assertEquals(parkingLotActual.getName(),parkingLotInput.getName());
+  }
+  @Test
+  public void should_return_count_when_call_getParkingLotCount_with_true_param(){
+    when(parkingLotRepository.getParkingLotCount()).thenReturn(3);
+    assertEquals(3,parkingLotServiceImpl.getParkingLotCount());
+  }
+  @Test
+  public void should_return_parkingLot_list_when_call_getAllParkingLotsWithFilterByPageAndSize(){
+    int page =1,size=10;
+    String name = "zhangrun";
+    List<ParkingLot> parkingLots = new  ArrayList<ParkingLot>(){{
+      add(new ParkingLot());
+      add(new ParkingLot());
+      add(new ParkingLot());
+      add(new ParkingLot());
+      add(new ParkingLot());
+      add(new ParkingLot());
+    }};
+    PageImpl<ParkingLot> parkingLotPage = new PageImpl<>(parkingLots);
+    ReflectionTestUtils.setField(parkingLotServiceImpl,ParkingLotServiceImpl.class
+      ,"parkingLotRepository",parkingLotRepository,ParkingLotRepository.class);
+    when(parkingLotRepository.findAllByNameLike(anyString(),any(Pageable.class)))
+      .thenReturn(parkingLotPage);
+    List<ParkingLot> parkingLotListOutput = parkingLotServiceImpl
+      .getAllParkingLotsWithFilterByPageAndSize(page,size,null);
+    assertEquals(6,parkingLotListOutput.size());
+  }
 }

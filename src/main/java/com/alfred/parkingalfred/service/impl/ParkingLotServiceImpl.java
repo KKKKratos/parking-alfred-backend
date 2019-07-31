@@ -51,7 +51,8 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     if (StringUtil.isNullOrEmpty(name)) {
       name = StringUtil.EMPTY_STRING;
     }
-    Page<ParkingLot> parkingLotPage = parkingLotRepository.findAllByNameLike("%" + name + "%", pageRequest);
+    Page<ParkingLot> parkingLotPage = parkingLotRepository
+      .findAllByNameLike("%" + name + "%", pageRequest);
     return parkingLotPage.getContent();
   }
 
