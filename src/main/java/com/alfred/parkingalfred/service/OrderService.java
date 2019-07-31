@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    List<Order> getOrders(String sortProperty, String sortOrder, Integer filterStatus);
+    List<Order> getOrders(String sortProperty, String sortOrder, Integer filterStatus,String carNumber);
 
     Order addOrder(CreateOrderDto createOrderDto);
 
